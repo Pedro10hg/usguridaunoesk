@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>US GURI DA UNOESC</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Cabeçalho -->
+    <header>
+        <h1>US GURI DA UNOESC</h1>
+        <p class="subtitle">O grupo mais brabo da universidade</p>
+    </header>
+
+    <!-- Navegação -->
+    <nav>
+        <a href="#" onclick="showPage('intro')">Intro</a>
+        <a href="#" onclick="showPage('adms')">Administradores</a>
+		<a href="#" onclick="showPage('founders')">Fundadores</a>
+		<a href="#" onclick="showPage('camiseta')">Camiseta</a>
+    </nav>
+
+    <!-- Página Intro -->
+    <section id="intro" class="page active">
+        <div class="intro-content">
+            <img src="img/intro-foto.jpeg" alt="US Guri da UNOESC - Grupo na quadra" class="intro-image">
+            <div class="about-box">
+                <h2>Quem somos?</h2>
+                <p>Somos <strong>US GURI DA UNOESC</strong> — um grupo de amigos com muita criatividade, bom humor e umas ideias meio malucas. A prova tá aí na foto.</p>
+                <p>A vida é curta demais pra não rir — e nós levamos isso a sério!</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Página adms -->
+    <section id="adms" class="page">
+        <div class="adms-content">
+            <h2>Administradores</h2>
+            <h3>Gabriel • Pedro • Thalis</h3>
+            <img src="img/adms.jpeg" alt="Borracha, Kevin Gil e Kaio Gil" class="amds-image">
+            <p>Os donos do rolê. Gabriel planeja, Pedro executa, Thalis bagunça com estilo. Tudo funciona — e ainda rola meme às 3h.</p>
+            <p class="quote">“Se não for pra rir, não é com a gente!”</p>
+        </div>
+    </section>
+
+	<!-- Página Fundadores -->
+	<section id="founders" class="page">
+    	<div class="founders-content">
+        	<h2>Fundadores</h2>
+        	<h3>Kevin Gil • Kaio Gil</h3>
+        	<img src="img/fundadores.jpeg" alt="Borracha, Kevin Gil e Kaio Gil" class="founders-image">
+        	<p>Os Irmãos Borracha! Kevin e Kaio (irmãos de sangue e alma) criaram o US Guri do zero. Ideias doidas, risada garantida e uma amizade que ninguém explica.</p>
+        	<p class="quote">“A gente começou isso tudo... é us guri!”</p>
+    	</div>
+	</section>
+		
+	<!-- Página Camiseta -->
+	<section id="camiseta" class="page">
+    	<div class="camiseta-content">
+        	<h2>A Camiseta Oficial</h2>
+        	<h3>US GURI DA UNOESC</h3>
+        	<img src="img/camiseta.png" alt="Camiseta do US Guri da UNOESC" class="camiseta-image">
+        	<p>Preta, verde neon, estampa **braba** e cheia de atitude. Só usa quem é **guri de verdade**.</p>
+        	<p>Feita pra quem vive a zoeira, curte a resenha e representa o rolê com orgulho.</p>
+        	<p class="quote">“Camiseta no corpo, guri na veia.”</p>
+    	</div>
+	</section>
+    
+    <!-- Rodapé -->
+    <footer>
+        <p>&copy; 2025 US Guri da UNOESC. Vida curta, zoeira eterna!</p>
+    </footer>
+
+    <script>
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+        }
+    </script>
+
+</body>
+</html>
