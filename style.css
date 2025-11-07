@@ -13,6 +13,7 @@
     padding: 0;
     box-sizing: border-box;
 }
+
 body {
     font-family: 'Arial', sans-serif;
     background-color: var(--preto);
@@ -20,7 +21,7 @@ body {
     line-height: 1.6;
 }
 
-/* BARRA SUPERIOR: À esquerda, com hover azul na logo + nome */
+/* BARRA SUPERIOR */
 header {
     background: linear-gradient(to bottom, var(--verde), var(--verde-escuro));
     display: flex;
@@ -31,8 +32,9 @@ header {
     position: sticky;
     top: 0;
     z-index: 100;
-    justify-content: flex-start; /* Tudo à esquerda */
+    justify-content: flex-start;
 }
+
 .group-link {
     display: flex;
     align-items: center;
@@ -46,6 +48,7 @@ header {
     border: 2px solid transparent;
     margin-right: 20px;
 }
+
 .group-link:hover {
     background-color: var(--azul-escuro);
     color: #fff;
@@ -53,11 +56,13 @@ header {
     transform: translateY(-3px);
     box-shadow: 0 4px 10px rgba(0, 51, 102, 0.4);
 }
+
 .logo-header {
-    width: 60px; /* Tamanho brabo, ajusta se quiser menor kkk */
+    width: 60px;
     height: auto;
     margin-right: 10px;
 }
+
 header a:not(.group-link) {
     color: #000;
     text-decoration: none;
@@ -69,6 +74,7 @@ header a:not(.group-link) {
     transition: all 0.3s ease;
     border: 2px solid transparent;
 }
+
 header a:not(.group-link):hover {
     background-color: var(--azul-escuro);
     color: #fff;
@@ -77,56 +83,72 @@ header a:not(.group-link):hover {
     box-shadow: 0 4px 10px rgba(0, 51, 102, 0.4);
 }
 
-/* PAGES: Conteúdo no centro */
+/* PAGES */
 .page {
     display: none;
     padding: 40px 20px;
-    max-width: 1000px;
-    margin: 0 auto; /* Centraliza o escopo todo */
-    text-align: center; /* Tudo centralizado */
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
 }
-.page.active { display: block; }
 
-/* CONTEÚDO DAS PÁGINAS (centralizado) */
+.page.active { 
+    display: block; 
+}
+
+/* CONTEÚDO DAS PÁGINAS */
 .intro-content, .adms-content, .founders-content, .camiseta-content {
-    max-width: 800px;
+    max-width: 1000px;
     margin: 0 auto;
     text-align: center;
     padding: 20px;
 }
+
 .intro-image, .adms-image, .founders-image, .camiseta-image {
     width: 100%;
     max-width: 600px;
     height: auto;
     border-radius: 16px;
-    margin: 25px auto; /* Centraliza */
+    margin: 25px auto;
     display: block;
     border: 4px solid var(--azul-escuro);
     box-shadow: 0 0 20px rgba(0, 51, 102, 0.4);
 }
+
 .about-box {
     background-color: var(--cinza-escuro);
     padding: 30px;
     border-radius: 16px;
-    margin: 20px auto; /* Centraliza */
+    margin: 20px auto;
     max-width: 800px;
     border: 2px solid var(--azul-escuro);
     box-shadow: 0 6px 15px rgba(0, 51, 102, 0.2);
 }
+
 h2 {
     color: var(--verde);
     font-size: 2.2rem;
     margin-bottom: 15px;
 }
+
 h3 {
     font-size: 1.6rem;
     color: #fff;
     margin-bottom: 20px;
 }
+
+h4 {
+    font-size: 1.4rem;
+    color: var(--verde);
+    margin-bottom: 15px;
+    margin-top: 30px;
+}
+
 p {
     font-size: 1.15rem;
     margin-bottom: 12px;
 }
+
 .quote {
     font-style: italic;
     color: var(--verde);
@@ -138,10 +160,219 @@ p {
     background: rgba(0, 51, 102, 0.1);
     border-radius: 6px;
     max-width: 700px;
-    margin: 0 auto; /* Centraliza */
+    margin: 20px auto;
 }
 
-/* FOOTER: Centralizado */
+/* === PERSONALIZAÇÃO INTERATIVA === */
+.personalizacao-box {
+    background: linear-gradient(135deg, #1a1a1a, var(--cinza-escuro));
+    padding: 40px;
+    border-radius: 20px;
+    margin: 50px auto;
+    border: 3px solid var(--verde);
+    box-shadow: 0 10px 30px rgba(0, 255, 115, 0.4);
+}
+
+.editor-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-top: 30px;
+}
+
+.personalizacao-inputs {
+    background: rgba(0, 51, 102, 0.2);
+    padding: 30px;
+    border-radius: 15px;
+    border: 2px solid var(--azul-escuro);
+}
+
+.dica {
+    font-size: 0.9rem;
+    color: var(--verde);
+    margin-top: 15px;
+    font-style: italic;
+}
+
+/* PREVIEW DA CAMISETA */
+.camiseta-preview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Preview da Camiseta */
+.camiseta-mockup {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.estampa-base {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.texto-personalizado {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.numero-peito-preview {
+    position: absolute;
+    top: 35%; /* Ajusta vertical pro peito da esquerda */
+    left: 15%; /* Ajusta horizontal pro peito da esquerda */
+    font-size: 1.5rem; /* Pequeno */
+    font-weight: bold;
+    color: white;
+}
+
+.nome-costas-preview {
+    position: absolute;
+    top: 30%; /* Em cima na costas da direita */
+    left: 57%; /* Ajusta pra costas direita */
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: white;
+    text-transform: uppercase;
+    text-align: center;
+    width: 30%;
+}
+
+.numero-costas-preview {
+    position: absolute;
+    top: 35%; /* Logo abaixo do nome na costas */
+    left: 56%; /* Mesma posição horizontal */
+    font-size: 4rem; /* Grande */
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    width: 30%;
+}
+
+.preview-label {
+    margin-top: 15px;
+    color: var(--verde);
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+/* GALERIA DE CAMISETAS */
+.galeria-camisetas {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin: 50px 0;
+}
+
+.camiseta-section {
+    background: rgba(0, 51, 102, 0.1);
+    padding: 20px;
+    border-radius: 15px;
+    border: 2px solid var(--azul-escuro);
+}
+
+.img-note {
+    font-size: 0.85rem;
+    color: #666;
+    font-style: italic;
+    margin-top: 10px;
+}
+
+/* FORMULÁRIO DE PEDIDO */
+.pedido-box {
+    background: linear-gradient(135deg, var(--cinza-escuro), #1a1a1a);
+    padding: 40px;
+    border-radius: 16px;
+    margin: 40px auto;
+    max-width: 600px;
+    border: 3px solid var(--verde);
+    box-shadow: 0 8px 20px rgba(0, 255, 115, 0.3);
+}
+
+.pedido-box h3 {
+    color: var(--verde);
+    margin-bottom: 30px;
+}
+
+.form-group {
+    margin-bottom: 25px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    color: var(--verde);
+    font-weight: bold;
+    margin-bottom: 8px;
+    font-size: 1.1rem;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid var(--azul-escuro);
+    border-radius: 8px;
+    background-color: #1a1a1a;
+    color: #fff;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--verde);
+    box-shadow: 0 0 10px rgba(0, 255, 115, 0.3);
+}
+
+.form-group input::placeholder {
+    color: #666;
+}
+
+.btn-submit {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, var(--verde), var(--verde-escuro));
+    color: #000;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.btn-submit:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 255, 115, 0.5);
+    background: linear-gradient(135deg, var(--verde-escuro), var(--verde));
+}
+
+.btn-submit:active {
+    transform: translateY(0);
+}
+
+.mensagem-sucesso {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: rgba(0, 255, 115, 0.2);
+    border: 2px solid var(--verde);
+    border-radius: 8px;
+    color: var(--verde);
+    font-weight: bold;
+    text-align: center;
+}
+
+/* FOOTER */
 footer {
     background: linear-gradient(to top, var(--verde), var(--verde-escuro));
     color: #000;
@@ -152,12 +383,55 @@ footer {
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
     border-top: 4px solid var(--azul-escuro);
     z-index: 100;
+    margin-top: 50px;
 }
 
 /* RESPONSIVO */
 @media (max-width: 768px) {
-    .logo-header { width: 30px; }
-    header h1 { font-size: 1.5rem; }
-    header a { font-size: 1rem; margin-right: 10px; }
-    .page { padding: 30px 10px; }
+    .logo-header { 
+        width: 30px; 
+    }
+    
+    header h1 { 
+        font-size: 1.5rem; 
+    }
+    
+    header a { 
+        font-size: 0.9rem; 
+        margin-right: 8px;
+        padding: 6px 10px;
+    }
+    
+    .page { 
+        padding: 30px 10px; 
+    }
+    
+    .editor-container {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+    
+    .galeria-camisetas {
+        grid-template-columns: 1fr;
+    }
+    
+    .nome-preview {
+        font-size: 1.5rem;
+    }
+    
+    .numero-preview {
+        font-size: 2.5rem;
+    }
+    
+    .pedido-box {
+        padding: 25px;
+    }
+    
+    h2 {
+        font-size: 1.8rem;
+    }
+    
+    h3 {
+        font-size: 1.3rem;
+    }
 }
