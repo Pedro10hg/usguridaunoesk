@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <!-- ============================= -->
+    <!-- META TAGS E CONFIGURAÇÕES     -->
+    <!-- ============================= -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>US GURI DA UNOESC</title>
+    
+    <!-- ============================= -->
+    <!-- ESTILOS E ÍCONES              -->
+    <!-- ============================= -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="img/logo.png">
+</head>
+
+<body>
+
+    <!-- ========================================== -->
+    <!-- HEADER - BARRA DE NAVEGAÇÃO               -->
+    <!-- ========================================== -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <!-- Logo e Título -->
+                <div class="brand-logo" onclick="showPage('quem-somos')">
+                    <img src="img/logo.png?v=1727881234" alt="logo" class="logo-header">
+                    <h1>US GURI DA UNOESC</h1>
+                </div>
+
+                <!-- Botão Menu Mobile -->
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+
+                <!-- Menu de Navegação -->
+                <nav>
+                    <ul id="navMenu">
+                        <li><a href="#" onclick="showPage('administradores')"></i> Administradores</a></li>
+                        <li><a href="#" onclick="showPage('fundadores')"></i> Fundadores</a></li>
+                        <li><a href="#" onclick="showPage('camiseta')"></i> Camiseta</a></li>
+                        <li><a href="#" onclick="showPage('recados')"></i> Recados</a></li>
+                        <li><a href="#" onclick="showPage('chat')"></i> Chat</a></li>
+                        <li><a href="#" onclick="showPage('galeria')"></i> Galeria</a></li>
+                    </ul>
+                </nav>
+
+                <!-- Área do Usuário -->
+                <div class="user-info">
+                    <span id="guri-username-display" class="username-display"></span>
+                    <a href="#" class="auth-btn" id="auth-link" onclick="handleAuthClick(event)">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ========================================== -->
+    <!-- PÁGINA: QUEM SOMOS                        -->
+    <!-- ========================================== -->
+    <section id="quem-somos" class="page active">
+        <div class="container">
+            <div class="section-title">
+                <h2>Quem Somos</h2>
+            </div>
+            <div class="quem-somos-content">
+                <div class="quem-somos-text">
+                    <p>Somos <strong>US GURI DA UNOESC</strong> — um grupo de amigos com muita criatividade, bom humor e umas ideias meio malucas. A prova tá aí na foto.</p>
+                    <p class="quote">"A vida é curta demais pra não rir — e nós levamos isso a sério!"</p>
+                </div>
+                <div class="quem-somos-image">
+                    <img src="img/intro-foto.jpeg?v=1727881234" alt="Grupo na quadra">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- PÁGINA: ADMINISTRADORES                   -->
+    <!-- ========================================== -->
+    <section id="administradores" class="page">
+        <div class="container">
+            <div class="section-title">
+                <h2>Administradores</h2>
+            </div>
+            <div class="administradores-grid">
+                <!-- Card Thalis -->
+                <div class="admin-card">
+                    <img src="img/adms.jpeg?v=1727881234" alt="Thalis">
+                    <div class="admin-info">
+                        <h3>Thalis</h3>
+                        <p class="admin-role">Bagunça com estilo</p>
+                    </div>
+                </div>
+
+                <!-- Card Gabriel -->
+                <div class="admin-card">
+                    <img src="img/adms.jpeg?v=1727881234" alt="Gabriel">
+                    <div class="admin-info">
+                        <h3>Gabriel</h3>
+                        <p class="admin-role">Planeja</p>
+                    </div>
+                </div>
+
+                <!-- Card Pedro -->
+                <div class="admin-card">
+                    <img src="img/adms.jpeg?v=1727881234" alt="Pedro">
+                    <div class="admin-info">
+                        <h3>Pedro</h3>
+                        <p class="admin-role">Executa</p>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 2rem;">
+                <p class="quote">"Se não for pra rir, não é com a gente!"</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- PÁGINA: FUNDADORES                        -->
+    <!-- ========================================== -->
+    <section id="fundadores" class="page">
+        <div class="container">
+            <div class="section-title">
+                <h2>Fundadores</h2>
+            </div>
+            <div class="fundadores-content">
+                <div class="fundadores-text">
+                    <p>Os <strong>pais da zoeira</strong>! Kevin e Kaio (irmãos de sangue) + Borracha (irmão de alma) criaram o US Guri do zero. Ideias doidas, risada garantida e uma amizade que ninguém explica.</p>
+                    <p class="quote">"A gente começou isso tudo... e não vai parar!"</p>
+                </div>
+                <div class="fundadores-image">
+                    <img src="img/fundadores.jpeg?v=1727881234" alt="Fundadores">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- PÁGINA: CAMISETA                          -->
+    <!-- ========================================== -->
+    <section id="camiseta" class="page">
+        <div class="container">
+            <div class="section-title">
+                <h2>A Camiseta Oficial</h2>
+            </div>
+            
+            <!-- Showcase da Camiseta -->
+            <div class="camiseta-showcase">
+                <div class="camiseta-info">
+                    <h3>US GURI DA UNOESC</h3>
+                    <p>Preta, verde neon, estampa <strong>braba</strong> e cheia de atitude. Só usa quem é <strong>guri de verdade</strong>.</p>
+                    <p class="quote">"Camiseta no corpo, guri na veia."</p>
+                </div>
+                <div class="camiseta-display">
+                    <img src="img/camiseta-pronta.png" alt="Camiseta Pronta">
+                </div>
+            </div>
+
+            <!-- Personalização da Camiseta -->
+<div class="personalizacao-box">
+    <h3>Personalize sua Camiseta!</h3>
+    <p>Digite seu nome e número para ver como vai ficar:</p>
+    
+    <div class="personalizacao-inputs">
+    <div class="form-group">
+        <label for="nomePersonalizado">Seu Nome:</label>
+        <input 
+            type="text" 
+            id="nomePersonalizado" 
+            maxlength="18" 
+            placeholder="Digite seu nome" 
+            oninput="atualizarCamiseta()"
+        >
+        <div class="form-note">Máximo: 18 caracteres</div>
+    </div>
+    <div class="form-group">
+        <label for="numeroPersonalizado">Seu Número:</label>
+        <input 
+            type="text" 
+            id="numeroPersonalizado" 
+            maxlength="2" 
+            placeholder="Ex.: 10" 
+            oninput="atualizarCamiseta()"
+            pattern="[0-9]*"
+        >
+        <div class="form-note">Máximo: 2 dígitos</div>
+    </div>
+</div>
+
+    <!-- Preview Frente e Costas -->
+<div class="preview-container">
+    <!-- Preview Frente -->
+    <div class="camiseta-preview-item">
+        <h4>👕 Frente</h4>
+        <div class="preview-wrapper">
+            <img src="img/camiseta-frente.png" alt="Camiseta Frente" class="camiseta-base">
+            <div class="overlay-text numero-peito">
+                <span id="previewNumeroFrente">10</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Preview Costas -->
+    <div class="camiseta-preview-item">
+        <h4>👕 Costas</h4>
+        <div class="preview-wrapper">
+            <img src="img/camiseta-costas.png" alt="Camiseta Costas" class="camiseta-base">
+            <div class="overlay-text nome-costas">
+                <span id="previewNomeCostas">SEU NOME</span>
+            </div>
+            <div class="overlay-text numero-costas">
+                <span id="previewNumeroCostas">10</span>
+            </div>
+        </div>
+    </div>
+</div>
+            <!-- Formulário de Pedido -->
+            <div class="pedido-box">
+                <h3>Garanta a sua - 2º Lote!</h3>
+                <form id="pedidoForm">
+                    <div class="form-group">
+                        <label for="nomeCompleto">Nome Completo:</label>
+                        <input type="text" id="nomeCompleto" required placeholder="Nome completo">
+                    </div>
+                    <div class="form-group">
+                        <label for="whatsapp">WhatsApp:</label>
+                        <input type="tel" id="whatsapp" required placeholder="(47) 99999-9999">
+                    </div>
+                    <div class="form-group">
+                        <label for="tamanho">Tamanho:</label>
+                        <select id="tamanho" required>
+                            <option value="">Selecione</option>
+                            <option value="P">P</option>
+                            <option value="M">M</option>
+                            <option value="G">G</option>
+                            <option value="GG">GG</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-submit">Fazer Pedido pelo WhatsApp</button>
+                </form>
+                <p id="mensagemSucesso" class="mensagem-sucesso"></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- PÁGINA: RECADOS                           -->
+    <!-- ========================================== -->
+    <section id="recados" class="page">
+        <div class="container">
+            <div class="section-title">
+                <h2>Recados dos Guris</h2>
+            </div>
+            <div class="recados-content">
+                <p class="quote">Manda tua zoeira pro rolê eterno!</p>
+                
+                <!-- Formulário de Recado -->
+                <form id="form-recado">
+                    <div class="form-group">
+                        <input type="text" id="nome" placeholder="Seu nome (Obrigatório)" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea id="mensagem" placeholder="Sua zoeira (Obrigatório)" required></textarea>
+                    </div>
+                    <button type="submit" class="btn-submit">Enviar Zoeira</button>
+                </form>
+
+                <!-- Lista de Recados -->
+                <div id="lista-recados" class="recados-lista"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- PÁGINA: CHAT                              -->
+    <!-- ========================================== -->
+    <section id="chat" class="page">
+        <div class="container">
+            <div class="section-title">
+                <h2>Chat Real-Time dos Guris</h2>
+            </div>
+            <div class="chat-content">
+                <!-- Header do Chat -->
+                <div class="chat-header">
+                    <h3>💬 Chat do Rolê</h3>
+                    <p>Você precisa estar logado para enviar mensagens.</p>
+                </div>
+
+                <!-- Mensagens do Chat -->
+                <div id="chat-messages" class="chat-messages"></div>
+
+                <!-- Input de Mensagem -->
+                <div class="chat-input">
+                    <input type="text" id="chat-input" placeholder="Digite sua mensagem..." maxlength="255" disabled>
+                    <button id="send-button" onclick="sendMessage()" disabled>
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- PÁGINA: GALERIA                           -->
+    <!-- ========================================== -->
+    <section id="galeria" class="page">
+        <div class="container">
+            <div class="section-title">
+                <h2>📸 Galeria de Memórias dos Guris</h2>
+            </div>
+            
+            <!-- Área de Upload -->
+            <div class="upload-area">
+                <h3>Compartilhe sua Zoeira!</h3>
+                <input type="file" id="photo-file" accept="image/*">
+                <input type="text" id="photo-caption" placeholder="Legenda para a foto (opcional)">
+                <button id="upload-btn" class="btn-submit">Upload</button>
+                <p id="upload-status" style="margin-top: 10px; color: var(--accent);"></p>
+            </div>
+
+            <hr style="border-top: 2px solid var(--primary); margin: 30px 0;">
+
+            <!-- Grid de Fotos -->
+            <div id="photos-container" class="galeria-grid">
+                <p>Carregando as melhores zoeiras...</p>
+            </div>
+        </div>
+    </section>
+
+<!-- ========================================== -->
+<!-- PÁGINA: LOGIN / CADASTRO                  -->
+<!-- ========================================== -->
+<section id="login" class="page">
+    <div class="container">
+        <div class="section-title">
+            <h2>🔐 Acesso Restrito: Guris Oficiais</h2>
+        </div>
+        <div class="login-content">
+            <div class="login-box">
+                
+                <!-- Mensagem de Status (COMPARTILHADA) -->
+                <p id="authMessage" class="mensagem-auth"></p>
+                
+                <!-- Formulário de Login -->
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="usernameLogin">Usuário Guri:</label>
+                        <input type="text" id="usernameLogin" required placeholder="Seu Apelido/Nome">
+                    </div>
+                    <div class="form-group">
+                        <label for="senhaLogin">Senha Braba:</label>
+                        <input type="password" id="senhaLogin" required placeholder="********">
+                    </div>
+                    <button type="submit" class="btn-submit" id="btnLogin">Entrar</button>
+                    <p class="toggle-link" onclick="toggleAuthMode()">
+                        Não tem conta? <span>Cadastre-se!</span>
+                    </p>
+                </form>
+
+                <!-- Formulário de Cadastro -->
+                <form id="cadastroForm" style="display: none;">
+                    <div class="form-group">
+                        <label for="usernameCadastro">Usuário Guri:</label>
+                        <input type="text" id="usernameCadastro" required placeholder="Mínimo 3 caracteres">
+                    </div>
+                    <div class="form-group">
+                        <label for="senhaCadastro">Senha:</label>
+                        <input type="password" id="senhaCadastro" required placeholder="Mínimo 6 caracteres">
+                    </div>
+                    <button type="submit" class="btn-submit">Criar Conta</button>
+                    <p class="toggle-link" onclick="toggleAuthMode()">
+                        Já tem conta? <span>Fazer Login</span>
+                    </p>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+    <!-- ========================================== -->
+    <!-- FOOTER - RODAPÉ                           -->
+    <!-- ========================================== -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <!-- Logo do Footer -->
+                <div class="footer-logo">
+                    <div class="logo">
+                        <i class="fas fa-users"></i>
+                        <h2>US GURI DA UNOESC</h2>
+                    </div>
+                    <p style="margin-top: 1rem;">Um grupo de amigos unidos pela amizade e pelo espírito guri!</p>
+                </div>
+
+                <!-- Links do Footer -->
+                <div class="footer-links">
+                    <div>
+                        <h4>Contato</h4>
+                        <ul>
+                            <li><a href="#"><i class="fab fa-whatsapp"></i> WhatsApp</a></li>
+                            <li><a href="#"><i class="fab fa-instagram"></i> Instagram</a></li>
+                            <li><a href="#"><i class="fab fa-facebook"></i> Facebook</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Copyright -->
+            <div class="footer-bottom">
+                <p>© 2025 US GURI DA UNOESC. Vida curta, zoeira eterna!</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ========================================== -->
+    <!-- SCRIPTS - FIREBASE E JAVASCRIPT           -->
+    <!-- ========================================== -->
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
+    <script src="script.js"></script>
+
+</body>
+</html>

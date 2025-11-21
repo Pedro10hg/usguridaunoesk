@@ -1,0 +1,1062 @@
+/* ============================================================================
+   IMPORTAÇÃO DE FONTES
+   ============================================================================ */
+
+@font-face {
+    font-family: 'Mayak';
+    src: url('fonts/Mayak-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Mayak';
+    src: url('fonts/Mayak-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* ============================================================================
+   RESET E CONFIGURAÇÕES GLOBAIS
+   ============================================================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+:root {
+    --primary: #27ae60;
+    --secondary: #2ecc71;
+    --accent: #f1c40f;
+    --dark: #111;
+    --light: #1a1a1a;
+    --gray: #333;
+    --text: #f0f0f0;
+}
+
+body {
+    background-color: var(--dark);
+    color: var(--text);
+    line-height: 1.6;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+/* ============================================================================
+   HEADER - BARRA DE NAVEGAÇÃO
+   ============================================================================ */
+
+header {
+    background: linear-gradient(135deg, var(--primary), #1e8449);
+    color: white;
+    padding: 1rem 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+}
+
+/* --- LOGO E TÍTULO --- */
+
+.brand-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    padding: 8px 15px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    background-color: transparent;
+    white-space: nowrap;
+}
+
+.brand-logo:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.brand-logo img {
+    width: 85px;
+    height: 60px;
+    object-fit: contain;
+}
+
+.brand-logo h1 {
+    font-size: 1.4em;
+    font-weight: bold;
+    margin: 0;
+    letter-spacing: 1px;
+    color: white;
+}
+
+/* --- NAVEGAÇÃO --- */
+
+nav {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.3s;
+    padding: 8px 16px;
+    border-radius: 5px;
+    white-space: nowrap;
+}
+
+nav a:hover {
+    color: white;
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* --- ÁREA DO USUÁRIO --- */
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.username-display {
+    color: white;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 6px 12px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.auth-btn {
+    background-color: var(--accent);
+    color: var(--dark);
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.3s;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.auth-btn:hover {
+    background-color: #f39c12;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(241, 196, 15, 0.4);
+}
+
+/* --- MENU MOBILE --- */
+
+.mobile-menu-btn {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 8px;
+}
+
+/* ============================================================================
+   SISTEMA DE PÁGINAS
+   ============================================================================ */
+
+.page {
+    display: none;
+    padding: 4rem 0;
+    min-height: calc(100vh - 400px);
+}
+
+.page.active {
+    display: block;
+}
+
+.section-title {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    position: relative;
+}
+
+.section-title h2 {
+    font-size: 2.2rem;
+    color: var(--primary);
+    display: inline-block;
+    padding-bottom: 10px;
+}
+
+.section-title h2:after {
+    content: '';
+    position: absolute;
+    width: 80px;
+    height: 4px;
+    background-color: var(--secondary);
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* --- CITAÇÕES --- */
+
+.quote {
+    font-style: italic;
+    color: var(--primary);
+    border-left: 4px solid var(--accent);
+    padding-left: 1rem;
+    margin: 1.5rem 0;
+    font-size: 1.2rem;
+}
+
+/* ============================================================================
+   PÁGINA: QUEM SOMOS
+   ============================================================================ */
+
+.quem-somos-content {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+    background-color: var(--light);
+    padding: 3rem 2rem;
+    border-radius: 10px;
+    min-height: 500px;
+}
+
+.quem-somos-text {
+    flex: 1;
+}
+
+.quem-somos-text p {
+    margin-bottom: 1.5rem;
+    font-size: 1.15rem;
+    line-height: 1.8;
+}
+
+.quem-somos-image {
+    flex: 1;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 3px solid var(--primary);
+}
+
+.quem-somos-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* ============================================================================
+   PÁGINA: ADMINISTRADORES
+   ============================================================================ */
+
+.administradores-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2.5rem;
+    justify-items: center;
+}
+
+.admin-card {
+    background-color: var(--light);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s, box-shadow 0.3s;
+    text-align: center;
+    border: 1px solid var(--gray);
+}
+
+.admin-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+    border-color: var(--primary);
+}
+
+.admin-card img {
+    width: 100%;
+    height: 350px;
+    object-fit: cover;
+}
+
+.admin-info {
+    padding: 1.5rem;
+}
+
+.admin-info h3 {
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+}
+
+.admin-role {
+    color: var(--secondary);
+    font-weight: 500;
+    margin-bottom: 1rem;
+}
+
+/* ============================================================================
+   PÁGINA: FUNDADORES
+   ============================================================================ */
+
+.fundadores-content {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+    background-color: var(--light);
+    padding: 3rem 2rem;
+    border-radius: 10px;
+    min-height: 500px;
+}
+
+.fundadores-text {
+    flex: 1;
+}
+
+.fundadores-text p {
+    margin-bottom: 1.5rem;
+    font-size: 1.15rem;
+    line-height: 1.8;
+}
+
+.fundadores-image {
+    flex: 1;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 3px solid var(--primary);
+}
+
+.fundadores-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* ============================================================================
+   PÁGINA: CAMISETA
+   ============================================================================ */
+
+/* --- Showcase da Camiseta --- */
+
+.camiseta-showcase {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+    background-color: var(--light);
+    padding: 2rem;
+    border-radius: 10px;
+    margin-bottom: 3rem;
+}
+
+.camiseta-info {
+    flex: 2;
+}
+
+.camiseta-info h3 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+}
+
+.camiseta-info p {
+    margin-bottom: 1.5rem;
+}
+
+.camiseta-display {
+    flex: 1;
+    text-align: center;
+}
+
+.camiseta-display img {
+    width: 100%;
+    height: 400px;
+    object-fit: contain;
+}
+
+/* --- Personalização da Camiseta --- */
+
+.personalizacao-box {
+    background: linear-gradient(135deg, #1a1a1a, var(--gray));
+    padding: 40px;
+    border-radius: 20px;
+    margin: 50px auto;
+    border: 3px solid var(--primary);
+    box-shadow: 0 10px 30px rgba(39, 174, 96, 0.4);
+}
+
+.personalizacao-box h3 {
+    color: var(--primary);
+    text-align: center;
+    margin-bottom: 1rem;
+    font-size: 2rem;
+}
+
+.personalizacao-box > p {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+}
+
+.personalizacao-inputs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    max-width: 600px;
+    margin: 0 auto 40px;
+}
+
+/* Preview Container */
+.preview-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 40px;
+    margin-top: 40px;
+}
+
+.camiseta-preview-item {
+    text-align: center;
+}
+
+.camiseta-preview-item h4 {
+    color: var(--primary);
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+}
+
+.preview-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+    padding: 20px;
+    border: 2px solid var(--primary);
+}
+
+.camiseta-base {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 10px;
+}
+
+/* Overlay de Texto */
+.overlay-text {
+    position: absolute;
+    color: #ffffff;
+    font-weight: bold;
+    text-align: center;
+    text-transform: uppercase;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    pointer-events: none;
+    font-family: 'Mayak', sans-serif;
+}
+
+/* Número no Peito (Frente) */
+.overlay-text.numero-peito {
+    top: 42%;
+    left: 38%;
+    transform: translate(-50%, -50%);
+    font-size: 2.2rem;
+    letter-spacing: 2px;
+    font-family: 'Mayak', sans-serif;
+}
+
+/* Nome nas Costas */
+.overlay-text.nome-costas {
+    top: 36%;
+    left: 49%;
+    transform: translate(-50%, -50%);
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+    font-family: 'Mayak', sans-serif;
+}
+
+/* Número nas Costas */
+.overlay-text.numero-costas {
+    top: 55%;
+    left: 49%;
+    transform: translate(-50%, -50%);
+    font-size: 7.5rem;
+    font-weight: 400;
+    font-family: 'Mayak', sans-serif;
+}
+
+/* --- Formulário de Pedido --- */
+
+.pedido-box {
+    background: linear-gradient(135deg, var(--gray), #1a1a1a);
+    padding: 40px;
+    border-radius: 16px;
+    margin: 40px auto;
+    max-width: 600px;
+    border: 3px solid var(--primary);
+    box-shadow: 0 8px 20px rgba(39, 174, 96, 0.3);
+}
+
+.pedido-box h3 {
+    color: var(--primary);
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+/* ============================================================================
+   FORMULÁRIOS
+   ============================================================================ */
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--primary);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--gray);
+    border-radius: 5px;
+    font-size: 1rem;
+    background-color: #222;
+    color: var(--text);
+}
+
+.form-group textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.form-note {
+    font-size: 0.9rem;
+    color: #aaa;
+    margin-top: 0.5rem;
+}
+
+.btn-submit {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: #000;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.btn-submit:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(39, 174, 96, 0.5);
+}
+
+.mensagem-sucesso {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: rgba(39, 174, 96, 0.2);
+    border: 2px solid var(--primary);
+    border-radius: 8px;
+    color: var(--primary);
+    font-weight: bold;
+    text-align: center;
+}
+
+/* ============================================================================
+   PÁGINA: RECADOS
+   ============================================================================ */
+
+.recados-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.recados-content .quote {
+    text-align: center;
+    font-size: 1.3rem;
+    margin-bottom: 2rem;
+}
+
+.recados-lista {
+    margin-top: 3rem;
+}
+
+.recado-item {
+    background: rgba(39, 174, 96, 0.1);
+    padding: 15px;
+    margin: 15px 0;
+    border-left: 4px solid var(--primary);
+    border-radius: 8px;
+}
+
+.recado-item strong {
+    color: var(--primary);
+}
+
+/* ============================================================================
+   PÁGINA: CHAT
+   ============================================================================ */
+
+.chat-content {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: var(--light);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--gray);
+}
+
+.chat-header {
+    background-color: var(--primary);
+    color: white;
+    padding: 1rem;
+    text-align: center;
+}
+
+.chat-header h3 {
+    margin-bottom: 0.5rem;
+}
+
+.chat-messages {
+    height: 450px;
+    padding: 1rem;
+    overflow-y: auto;
+    border-bottom: 1px solid var(--gray);
+    background-color: #1a1a1a;
+}
+
+.chat-messages::-webkit-scrollbar {
+    width: 8px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+    background: var(--gray);
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 4px;
+}
+
+.system-message {
+    color: var(--primary);
+    font-style: italic;
+    text-align: center;
+    padding: 15px 0;
+}
+
+.chat-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 8px 0;
+    margin-bottom: 5px;
+    border-bottom: 1px solid #222;
+}
+
+.chat-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    margin-right: 10px;
+    object-fit: cover;
+    border: 2px solid var(--primary);
+    flex-shrink: 0;
+}
+
+.chat-item p {
+    margin: 0;
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+.chat-item strong {
+    color: var(--primary);
+    margin-right: 8px;
+}
+
+.chat-input {
+    display: flex;
+    padding: 1rem;
+}
+
+.chat-input input {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid var(--gray);
+    border-radius: 30px;
+    margin-right: 10px;
+    background-color: #222;
+    color: var(--text);
+}
+
+.chat-input button {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+}
+
+.chat-input button:hover:not(:disabled) {
+    background-color: var(--secondary);
+    transform: scale(1.1);
+}
+
+.chat-input button:disabled,
+.chat-input input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ============================================================================
+   PÁGINA: GALERIA
+   ============================================================================ */
+
+.upload-area {
+    background: var(--light);
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    margin-bottom: 3rem;
+    border: 2px solid var(--gray);
+}
+
+.upload-area h3 {
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+}
+
+.upload-area input[type="file"],
+.upload-area input[type="text"] {
+    display: block;
+    width: 100%;
+    max-width: 500px;
+    margin: 15px auto;
+    padding: 12px;
+    border: 1px solid var(--gray);
+    border-radius: 5px;
+    background-color: #222;
+    color: var(--text);
+}
+
+.galeria-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+    gap: 30px;
+    justify-content: center;
+}
+
+.photo-item {
+    background: var(--light);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--gray);
+}
+
+.photo-item img,
+.photo-item video {
+    width: 100%;
+    height: 450px;
+    object-fit: cover;
+    display: block;
+}
+
+.photo-info {
+    padding: 15px;
+}
+
+.photo-caption {
+    font-weight: bold;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+}
+
+.photo-info small {
+    color: #aaa;
+}
+
+.comments-list {
+    padding: 15px;
+    max-height: 180px;
+    overflow-y: auto;
+    background: #1a1a1a;
+    border-top: 1px solid var(--gray);
+}
+
+.comments-list p {
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+.comments-list strong {
+    color: var(--primary);
+}
+
+.no-comments {
+    color: #666;
+    font-style: italic;
+    text-align: center;
+}
+
+.comment-form-area {
+    display: flex;
+    padding: 12px;
+    border-top: 1px solid var(--gray);
+    gap: 8px;
+}
+
+.comment-form-area input {
+    flex-grow: 1;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid var(--gray);
+    background: #222;
+    color: white;
+}
+
+.comment-form-area button {
+    padding: 10px 18px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.comment-form-area button:hover {
+    background: var(--secondary);
+}
+
+/* ============================================================================
+   PÁGINA: LOGIN / CADASTRO
+   ============================================================================ */
+
+.login-content {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.login-box {
+    background-color: var(--light);
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--gray);
+}
+
+.toggle-link {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: #aaa;
+}
+
+.toggle-link span {
+    color: var(--primary);
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.toggle-link span:hover {
+    color: var(--secondary);
+}
+
+.mensagem-auth {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 8px;
+    font-weight: bold;
+    text-align: center;
+    display: none;
+}
+
+.mensagem-auth.success {
+    background-color: rgba(39, 174, 96, 0.2);
+    border: 2px solid var(--primary);
+    color: var(--primary);
+}
+
+.mensagem-auth.error {
+    background-color: rgba(255, 0, 0, 0.2);
+    border: 2px solid #ff0000;
+    color: #ff0000;
+}
+
+/* ============================================================================
+   FOOTER - RODAPÉ
+   ============================================================================ */
+
+footer {
+    background: linear-gradient(to top, var(--primary), var(--secondary));
+    color: #000;
+    padding: 3rem 0 1.5rem;
+    margin-top: 6rem;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+}
+
+.footer-logo {
+    flex: 1;
+}
+
+.footer-links {
+    flex: 1;
+    display: flex;
+    justify-content: space-around;
+}
+
+.footer-links ul {
+    list-style: none;
+}
+
+.footer-links h4 {
+    margin-bottom: 1rem;
+    color: var(--dark);
+}
+
+.footer-links a {
+    color: var(--dark);
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.footer-links a:hover {
+    color: white;
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 1.5rem;
+    border-top: 2px solid rgba(0, 0, 0, 0.2);
+    font-weight: bold;
+}
+
+/* ============================================================================
+   RESPONSIVIDADE - MOBILE
+   ============================================================================ */
+
+@media (max-width: 992px) {
+    /* Empilha conteúdo em telas menores */
+    .quem-somos-content,
+    .fundadores-content,
+    .camiseta-showcase {
+        flex-direction: column;
+    }
+
+    .quem-somos-image,
+    .fundadores-image,
+    .camiseta-display {
+        width: 100%;
+        max-width: 500px;
+        margin-top: 2rem;
+    }
+
+    .quem-somos-image img,
+    .fundadores-image img,
+    .camiseta-display img {
+        height: auto;
+        max-height: 400px;
+    }
+
+    .editor-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Menu mobile */
+    .mobile-menu-btn {
+        display: block;
+    }
+
+    nav ul {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background-color: var(--primary);
+        flex-direction: column;
+        padding: 1rem;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    nav ul.active {
+        display: flex;
+    }
+
+    /* Footer empilhado */
+    .footer-content {
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .footer-links {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    /* 1 coluna na galeria e administradores */
+    .galeria-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .administradores-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Posts menores em celular */
+    .photo-item img,
+    .photo-item video {
+        height: 300px;
+    }
+}
