@@ -52,8 +52,12 @@ function showPage(pageId) {
         rankingUnsubscribe();
         rankingUnsubscribe = null;
     }
+    if (snakeRankingUnsubscribe) {
+        snakeRankingUnsubscribe();
+        snakeRankingUnsubscribe = null;
+    }
 
-    // Parar o jogo se estiver rodando
+    // Parar o jogo Dino se estiver rodando
     if (gameRunning) {
         gameRunning = false;
         document.removeEventListener('keydown', handleJump);
@@ -62,6 +66,22 @@ function showPage(pageId) {
             canvas.removeEventListener('click', handleTouchJump);
             canvas.removeEventListener('touchstart', handleTouchJump);
         }
+    }
+
+    // Parar o jogo Snake se estiver rodando
+    if (snakeRunning) {
+        snakeRunning = false;
+        if (snakeGameLoop) {
+            clearInterval(snakeGameLoop);
+            snakeGameLoop = null;
+        }
+        document.removeEventListener('keydown', handleSnakeKeyPress);
+        const snakeCanvas = document.getElementById('snakeCanvas');
+        if (snakeCanvas) {
+            snakeCanvas.removeEventListener('touchstart', handleSnakeTouchStart);
+            snakeCanvas.removeEventListener('touchend', handleSnakeTouchEnd);
+        }
+        disableSnakeAntiCheat();
     }
 
     // Troca a página ativa
@@ -85,6 +105,10 @@ function showPage(pageId) {
     if (pageId === 'jogo') {
         initGame();
         loadRanking();
+    }
+    if (pageId === 'snake') {
+        initSnakeGame();
+        loadSnakeRanking();
     }
 
     // Fecha menu mobile se estiver aberto
@@ -1271,6 +1295,510 @@ function loadRanking() {
 }
 
 // ====================================================================
+// SISTEMA DE JOGO - SNAKE
+// ====================================================================
+
+// Variáveis do Snake
+let snakeCanvas, snakeCtx;
+let snakeRunning = false;
+let snakeScore = 0;
+let snakeSpeed = 150; // ms entre movimentos
+let snakeHighScore = 0;
+let snakeRankingUnsubscribe = null;
+let snakeGameLoop = null;
+let snakeAntiCheatInterval = null;
+let snakeAntiCheatActive = false;
+let snakeOriginalConsole = {};
+
+// Grid
+const gridSize = 20;
+const tileCount = 20;
+
+// Snake
+let snake = [];
+let snakeLength = 3;
+let headX = 10;
+let headY = 10;
+let velocityX = 0;
+let velocityY = 0;
+
+// Comida
+let foodX = 15;
+let foodY = 15;
+
+// Controles touch
+let touchStartX = 0;
+let touchStartY = 0;
+
+// --- Inicializar Snake ---
+function initSnakeGame() {
+    snakeCanvas = document.getElementById('snakeCanvas');
+    snakeCtx = snakeCanvas.getContext('2d');
+
+    // Ajustar dimensões
+    snakeCanvas.width = 400;
+    snakeCanvas.height = 400;
+
+    // Carregar high score
+    snakeHighScore = parseInt(localStorage.getItem('guriSnakeHighScore')) || 0;
+    document.getElementById('snake-high-score').textContent = snakeHighScore;
+}
+
+// --- Começar Jogo Snake ---
+function startSnakeGame() {
+    // Verificar login
+    if (!currentUser) {
+        document.getElementById('snake-login-warning').style.display = 'block';
+        setTimeout(() => {
+            showPage('login');
+        }, 2000);
+        return;
+    }
+
+    // Esconder telas
+    document.getElementById('snake-start-screen').style.display = 'none';
+    document.getElementById('snake-game-over-screen').style.display = 'none';
+
+    // Reset variáveis
+    snakeRunning = true;
+    snakeScore = 0;
+    snakeLength = 3;
+    snake = [];
+    headX = 10;
+    headY = 10;
+    velocityX = 1;
+    velocityY = 0;
+    snakeSpeed = 150;
+
+    // Posicionar comida
+    placeFood();
+
+    // Ativar anti-cheat
+    enableSnakeAntiCheat();
+
+    // Listeners
+    document.addEventListener('keydown', handleSnakeKeyPress);
+    snakeCanvas.addEventListener('touchstart', handleSnakeTouchStart);
+    snakeCanvas.addEventListener('touchend', handleSnakeTouchEnd);
+
+    // Atualizar UI
+    document.getElementById('snake-current-score').textContent = snakeScore;
+    document.getElementById('snake-current-length').textContent = snakeLength;
+
+    // Iniciar loop
+    snakeGameLoop = setInterval(updateSnakeGame, snakeSpeed);
+}
+
+// --- Reiniciar Snake ---
+function restartSnakeGame() {
+    document.getElementById('snake-game-over-screen').style.display = 'none';
+    startSnakeGame();
+}
+
+// --- Controles Teclado ---
+function handleSnakeKeyPress(e) {
+    if (!snakeRunning) return;
+
+    // Prevenir scroll
+    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) {
+        e.preventDefault();
+    }
+
+    // Mudar direção (não pode ir na direção oposta)
+    if (e.code === 'ArrowUp' && velocityY !== 1) {
+        velocityX = 0;
+        velocityY = -1;
+    }
+    if (e.code === 'ArrowDown' && velocityY !== -1) {
+        velocityX = 0;
+        velocityY = 1;
+    }
+    if (e.code === 'ArrowLeft' && velocityX !== 1) {
+        velocityX = -1;
+        velocityY = 0;
+    }
+    if (e.code === 'ArrowRight' && velocityX !== -1) {
+        velocityX = 1;
+        velocityY = 0;
+    }
+}
+
+// --- Controles Touch ---
+function handleSnakeTouchStart(e) {
+    e.preventDefault();
+    if (!snakeRunning) return;
+
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+}
+
+function handleSnakeTouchEnd(e) {
+    e.preventDefault();
+    if (!snakeRunning) return;
+
+    const touchEndX = e.changedTouches[0].clientX;
+    const touchEndY = e.changedTouches[0].clientY;
+
+    const diffX = touchEndX - touchStartX;
+    const diffY = touchEndY - touchStartY;
+
+    // Determinar direção baseado no maior deslocamento
+    if (Math.abs(diffX) > Math.abs(diffY)) {
+        // Movimento horizontal
+        if (diffX > 0 && velocityX !== -1) {
+            velocityX = 1;
+            velocityY = 0;
+        } else if (diffX < 0 && velocityX !== 1) {
+            velocityX = -1;
+            velocityY = 0;
+        }
+    } else {
+        // Movimento vertical
+        if (diffY > 0 && velocityY !== -1) {
+            velocityX = 0;
+            velocityY = 1;
+        } else if (diffY < 0 && velocityY !== 1) {
+            velocityX = 0;
+            velocityY = -1;
+        }
+    }
+}
+
+// --- Loop Principal ---
+function updateSnakeGame() {
+    if (!snakeRunning) return;
+
+    // Mover cobra
+    headX += velocityX;
+    headY += velocityY;
+
+    // Colisão com paredes
+    if (headX < 0 || headX >= tileCount || headY < 0 || headY >= tileCount) {
+        snakeGameOver();
+        return;
+    }
+
+    // Colisão com próprio corpo
+    for (let i = 0; i < snake.length; i++) {
+        if (snake[i].x === headX && snake[i].y === headY) {
+            snakeGameOver();
+            return;
+        }
+    }
+
+    // Adicionar nova posição da cabeça
+    snake.push({ x: headX, y: headY });
+
+    // Remover cauda se não comeu
+    while (snake.length > snakeLength) {
+        snake.shift();
+    }
+
+    // Verificar se comeu
+    if (headX === foodX && headY === foodY) {
+        snakeLength++;
+        snakeScore += 10;
+        document.getElementById('snake-current-score').textContent = snakeScore;
+        document.getElementById('snake-current-length').textContent = snakeLength;
+        placeFood();
+
+        // Aumentar velocidade a cada 5 comidas
+        if (snakeLength % 5 === 0 && snakeSpeed > 50) {
+            snakeSpeed -= 10;
+            clearInterval(snakeGameLoop);
+            snakeGameLoop = setInterval(updateSnakeGame, snakeSpeed);
+        }
+    }
+
+    // Desenhar tudo
+    drawSnakeGame();
+}
+
+// --- Desenhar Jogo ---
+function drawSnakeGame() {
+    // Fundo
+    snakeCtx.fillStyle = '#1a1a1a';
+    snakeCtx.fillRect(0, 0, snakeCanvas.width, snakeCanvas.height);
+
+    // Grid
+    snakeCtx.strokeStyle = '#2a2a2a';
+    snakeCtx.lineWidth = 1;
+    for (let i = 0; i <= tileCount; i++) {
+        snakeCtx.beginPath();
+        snakeCtx.moveTo(i * gridSize, 0);
+        snakeCtx.lineTo(i * gridSize, snakeCanvas.height);
+        snakeCtx.stroke();
+
+        snakeCtx.beginPath();
+        snakeCtx.moveTo(0, i * gridSize);
+        snakeCtx.lineTo(snakeCanvas.width, i * gridSize);
+        snakeCtx.stroke();
+    }
+
+    // Comida
+    snakeCtx.fillStyle = '#e74c3c';
+    snakeCtx.shadowBlur = 10;
+    snakeCtx.shadowColor = '#e74c3c';
+    snakeCtx.fillRect(foodX * gridSize, foodY * gridSize, gridSize - 2, gridSize - 2);
+    snakeCtx.shadowBlur = 0;
+
+    // Cobra
+    for (let i = 0; i < snake.length; i++) {
+        if (i === snake.length - 1) {
+            // Cabeça
+            snakeCtx.fillStyle = '#2ecc71';
+            snakeCtx.shadowBlur = 10;
+            snakeCtx.shadowColor = '#2ecc71';
+        } else {
+            // Corpo
+            const gradient = snakeCtx.createLinearGradient(
+                snake[i].x * gridSize,
+                snake[i].y * gridSize,
+                snake[i].x * gridSize + gridSize,
+                snake[i].y * gridSize + gridSize
+            );
+            gradient.addColorStop(0, '#27ae60');
+            gradient.addColorStop(1, '#229954');
+            snakeCtx.fillStyle = gradient;
+            snakeCtx.shadowBlur = 5;
+            snakeCtx.shadowColor = '#27ae60';
+        }
+
+        snakeCtx.fillRect(
+            snake[i].x * gridSize + 1,
+            snake[i].y * gridSize + 1,
+            gridSize - 3,
+            gridSize - 3
+        );
+    }
+    snakeCtx.shadowBlur = 0;
+
+    // Olhos da cobra (na cabeça)
+    if (snake.length > 0) {
+        const head = snake[snake.length - 1];
+        snakeCtx.fillStyle = '#000';
+
+        if (velocityX === 1) {
+            // Olhando para direita
+            snakeCtx.fillRect(head.x * gridSize + 13, head.y * gridSize + 4, 3, 3);
+            snakeCtx.fillRect(head.x * gridSize + 13, head.y * gridSize + 11, 3, 3);
+        } else if (velocityX === -1) {
+            // Olhando para esquerda
+            snakeCtx.fillRect(head.x * gridSize + 3, head.y * gridSize + 4, 3, 3);
+            snakeCtx.fillRect(head.x * gridSize + 3, head.y * gridSize + 11, 3, 3);
+        } else if (velocityY === 1) {
+            // Olhando para baixo
+            snakeCtx.fillRect(head.x * gridSize + 4, head.y * gridSize + 13, 3, 3);
+            snakeCtx.fillRect(head.x * gridSize + 11, head.y * gridSize + 13, 3, 3);
+        } else if (velocityY === -1) {
+            // Olhando para cima
+            snakeCtx.fillRect(head.x * gridSize + 4, head.y * gridSize + 3, 3, 3);
+            snakeCtx.fillRect(head.x * gridSize + 11, head.y * gridSize + 3, 3, 3);
+        }
+    }
+}
+
+// --- Posicionar Comida ---
+function placeFood() {
+    let validPosition = false;
+
+    while (!validPosition) {
+        foodX = Math.floor(Math.random() * tileCount);
+        foodY = Math.floor(Math.random() * tileCount);
+
+        // Verificar se não está em cima da cobra
+        validPosition = true;
+        for (let i = 0; i < snake.length; i++) {
+            if (snake[i].x === foodX && snake[i].y === foodY) {
+                validPosition = false;
+                break;
+            }
+        }
+    }
+}
+
+// --- Game Over ---
+function snakeGameOver() {
+    snakeRunning = false;
+    clearInterval(snakeGameLoop);
+
+    document.removeEventListener('keydown', handleSnakeKeyPress);
+    snakeCanvas.removeEventListener('touchstart', handleSnakeTouchStart);
+    snakeCanvas.removeEventListener('touchend', handleSnakeTouchEnd);
+
+    // Desativar anti-cheat
+    disableSnakeAntiCheat();
+
+    document.getElementById('snake-final-score').textContent = snakeScore;
+    document.getElementById('snake-final-length').textContent = snakeLength;
+
+    // Atualizar high score
+    if (snakeScore > snakeHighScore) {
+        snakeHighScore = snakeScore;
+        localStorage.setItem('guriSnakeHighScore', snakeHighScore);
+        document.getElementById('snake-high-score').textContent = snakeHighScore;
+    }
+
+    // Salvar pontuação
+    saveSnakeScore(snakeScore);
+
+    // Mostrar game over
+    document.getElementById('snake-game-over-screen').style.display = 'block';
+}
+
+// --- Salvar Pontuação ---
+function saveSnakeScore(score) {
+    const saveStatus = document.getElementById('snake-save-status');
+    saveStatus.textContent = '⏳ Salvando pontuação...';
+    saveStatus.style.color = '#f1c40f';
+
+    if (!currentUser) {
+        saveStatus.textContent = '❌ Não logado - pontuação não salva';
+        saveStatus.style.color = '#ff0000';
+        return;
+    }
+
+    db.collection("snake_scores").doc(currentUser).get()
+        .then(doc => {
+            if (doc.exists) {
+                const currentHighScore = doc.data().score;
+
+                if (score > currentHighScore) {
+                    return db.collection("snake_scores").doc(currentUser).update({
+                        score: score,
+                        length: snakeLength,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                } else {
+                    saveStatus.textContent = `✅ Pontuação salva! Seu recorde é ${currentHighScore}`;
+                    saveStatus.style.color = '#27ae60';
+                    return Promise.resolve();
+                }
+            } else {
+                return db.collection("snake_scores").doc(currentUser).set({
+                    username: currentUser.toUpperCase(),
+                    score: score,
+                    length: snakeLength,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            }
+        })
+        .then(() => {
+            saveStatus.textContent = '🎉 Novo recorde salvo!';
+            saveStatus.style.color = '#27ae60';
+            loadSnakeRanking();
+        })
+        .catch(err => {
+            console.error('Erro ao salvar pontuação:', err);
+            saveStatus.textContent = '❌ Erro ao salvar: ' + err.message;
+            saveStatus.style.color = '#ff0000';
+        });
+}
+
+// --- Carregar Ranking ---
+function loadSnakeRanking() {
+    const rankingList = document.getElementById('snake-ranking-list');
+
+    snakeRankingUnsubscribe = db.collection("snake_scores")
+        .orderBy("score", "desc")
+        .limit(10)
+        .onSnapshot(
+            snapshot => {
+                rankingList.innerHTML = '';
+
+                if (snapshot.empty) {
+                    rankingList.innerHTML = '<p class="loading-text">Nenhuma pontuação ainda. Seja o primeiro!</p>';
+                    return;
+                }
+
+                let position = 0;
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    position++;
+
+                    const rankingItem = document.createElement('div');
+                    rankingItem.classList.add('ranking-item');
+
+                    if (position === 1) rankingItem.classList.add('top-1');
+                    if (position === 2) rankingItem.classList.add('top-2');
+                    if (position === 3) rankingItem.classList.add('top-3');
+
+                    let medal = '';
+                    if (position === 1) medal = '🥇';
+                    else if (position === 2) medal = '🥈';
+                    else if (position === 3) medal = '🥉';
+                    else medal = position + 'º';
+
+                    const playerName = data.username || 'Anônimo';
+                    const playerScore = data.score || 0;
+
+                    rankingItem.innerHTML = `
+                        <span class="ranking-position">${medal}</span>
+                        <span class="ranking-player">${playerName}</span>
+                        <span class="ranking-score">${playerScore}</span>
+                    `;
+
+                    rankingList.appendChild(rankingItem);
+                });
+            },
+            error => {
+                console.error('Erro ao carregar ranking:', error);
+                rankingList.innerHTML = '<p style="color: red;">❌ Erro ao carregar ranking</p>';
+            }
+        );
+}
+
+// --- Anti-Cheat Snake ---
+function enableSnakeAntiCheat() {
+    if (snakeAntiCheatActive) return;
+    snakeAntiCheatActive = true;
+
+    snakeOriginalConsole = {
+        log: console.log,
+        warn: console.warn,
+        error: console.error,
+        info: console.info,
+        debug: console.debug
+    };
+
+    console.log = function() {};
+    console.warn = function() {};
+    console.error = function() {};
+    console.info = function() {};
+    console.debug = function() {};
+
+    const detectDevTools = () => {
+        const threshold = 160;
+        if (window.outerWidth - window.innerWidth > threshold ||
+            window.outerHeight - window.innerHeight > threshold) {
+            if (snakeRunning) {
+                snakeGameOver();
+                alert('⚠️ DevTools detectado! Jogo encerrado para manter a integridade do ranking.');
+            }
+        }
+    };
+
+    snakeAntiCheatInterval = setInterval(detectDevTools, 1000);
+}
+
+function disableSnakeAntiCheat() {
+    if (!snakeAntiCheatActive) return;
+    snakeAntiCheatActive = false;
+
+    console.log = snakeOriginalConsole.log;
+    console.warn = snakeOriginalConsole.warn;
+    console.error = snakeOriginalConsole.error;
+    console.info = snakeOriginalConsole.info;
+    console.debug = snakeOriginalConsole.debug;
+
+    if (snakeAntiCheatInterval) {
+        clearInterval(snakeAntiCheatInterval);
+        snakeAntiCheatInterval = null;
+    }
+}
+
+// ====================================================================
 // INICIALIZAÇÃO QUANDO A PÁGINA CARREGAR
 // ====================================================================
 
@@ -1301,6 +1829,9 @@ window.addEventListener('load', () => {
     // Prevenir scroll global quando teclas de jogo são pressionadas
     window.addEventListener('keydown', (e) => {
         if (gameRunning && (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'ArrowDown')) {
+            e.preventDefault();
+        }
+        if (snakeRunning && ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) {
             e.preventDefault();
         }
     });

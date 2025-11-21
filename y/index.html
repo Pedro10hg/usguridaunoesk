@@ -46,7 +46,8 @@
                         <li><a href="#" onclick="showPage('recados')"><i class="fas fa-comments"></i> Recados</a></li>
                         <li><a href="#" onclick="showPage('chat')"><i class="fas fa-comment-dots"></i> Chat</a></li>
                         <li><a href="#" onclick="showPage('galeria')"><i class="fas fa-images"></i> Galeria</a></li>
-                        <li><a href="#" onclick="showPage('jogo')"><i class="fas fa-gamepad"></i> Jogo</a></li>
+                        <li><a href="#" onclick="showPage('jogo')"><i class="fas fa-gamepad"></i> Dino</a></li>
+                        <li><a href="#" onclick="showPage('snake')"><i class="fas fa-ghost"></i> Snake</a></li>
                     </ul>
                 </nav>
 
@@ -380,6 +381,60 @@
                 <div class="ranking-area">
                     <h3>🏆 Top 10 - Melhores Guris</h3>
                     <div id="ranking-list" class="ranking-list">
+                        <p class="loading-text">Carregando ranking...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- PÁGINA: JOGO DA COBRINHA                  -->
+    <!-- ========================================== -->
+    <section id="snake" class="page">
+        <div class="container">
+            <div class="section-title">
+                <h2>🐍 Jogo do Guri - Snake</h2>
+            </div>
+
+            <div class="jogo-container">
+                <!-- Área do Jogo -->
+                <div class="game-area">
+                    <!-- Tela de Início -->
+                    <div id="snake-start-screen" class="game-overlay">
+                        <h3>🎮 Snake - Us Guri Edition</h3>
+                        <p class="desktop-only">Use as <strong>SETAS</strong> para controlar a cobrinha!</p>
+                        <p class="mobile-only">Toque na tela para mudar a direção!</p>
+                        <p id="snake-login-warning" style="display: none; color: #ff0000; font-weight: bold;">
+                            ⚠️ Você precisa estar logado para jogar!
+                        </p>
+                        <button id="start-snake-btn" class="btn-submit" onclick="startSnakeGame()">Começar Jogo</button>
+                    </div>
+
+                    <!-- Tela de Game Over -->
+                    <div id="snake-game-over-screen" class="game-overlay" style="display: none;">
+                        <h3>💀 Game Over!</h3>
+                        <p>Sua Pontuação: <strong id="snake-final-score">0</strong></p>
+                        <p>Comprimento: <strong id="snake-final-length">0</strong></p>
+                        <p id="snake-save-status"></p>
+                        <button class="btn-submit" onclick="restartSnakeGame()">Jogar Novamente</button>
+                    </div>
+
+                    <!-- Canvas do Jogo -->
+                    <canvas id="snakeCanvas" width="800" height="400"></canvas>
+
+                    <!-- Placar Atual -->
+                    <div class="game-info">
+                        <p>Pontuação: <strong id="snake-current-score">0</strong></p>
+                        <p>Tamanho: <strong id="snake-current-length">3</strong></p>
+                        <p>Recorde: <strong id="snake-high-score">0</strong></p>
+                    </div>
+                </div>
+
+                <!-- Ranking -->
+                <div class="ranking-area">
+                    <h3>🏆 Top 10 - Cobras Brabas</h3>
+                    <div id="snake-ranking-list" class="ranking-list">
                         <p class="loading-text">Carregando ranking...</p>
                     </div>
                 </div>
