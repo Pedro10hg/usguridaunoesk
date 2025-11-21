@@ -165,10 +165,20 @@ nav a:hover {
     min-width: 180px;
     border-radius: 8px;
     padding: 8px 0;
+    padding-top: 12px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
     z-index: 1000;
     flex-direction: column;
-    margin-top: 5px;
+}
+
+/* Ponte invisível para manter hover */
+.dropdown::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    height: 10px;
 }
 
 .dropdown:hover .dropdown-menu {
