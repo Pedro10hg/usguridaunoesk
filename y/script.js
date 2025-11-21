@@ -48,11 +48,21 @@ function showPage(pageId) {
         recadosUnsubscribe();
         recadosUnsubscribe = null;
     }
+    if (rankingUnsubscribe) {
+        rankingUnsubscribe();
+        rankingUnsubscribe = null;
+    }
+
+    // Parar o jogo se estiver rodando
+    if (gameRunning) {
+        gameRunning = false;
+        document.removeEventListener('keydown', handleJump);
+    }
 
     // Troca a página ativa
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById(pageId).classList.add('active');
-    
+
     // Scroll suave para o topo
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
@@ -66,6 +76,10 @@ function showPage(pageId) {
     }
     if (pageId === 'galeria') {
         loadGallery();
+    }
+    if (pageId === 'jogo') {
+        initGame();
+        loadRanking();
     }
 
     // Fecha menu mobile se estiver aberto
@@ -489,11 +503,6 @@ window.addEventListener('load', () => {
     atualizarCamiseta();
 });
 
-// Inicializa a preview quando a página carrega
-window.addEventListener('load', () => {
-    atualizarCamiseta();
-});
-
 // --- Pedido via WhatsApp ---
 document.getElementById('pedidoForm').addEventListener('submit', function(e) {
     e.preventDefault();
@@ -661,6 +670,366 @@ function loadComments(photoId) {
 function getDefaultAvatar() {
     const randomIndex = Math.floor(Math.random() * AVATAR_URLS.length);
     return AVATAR_URLS[randomIndex];
+}
+
+// ====================================================================
+// SISTEMA DE JOGO - DINO RUNNER
+// ====================================================================
+
+// Variáveis do Jogo
+let gameCanvas, gameCtx;
+let gameRunning = false;
+let gameScore = 0;
+let gameSpeed = 6;
+let gameFrameCount = 0;
+let highScore = 0;
+let rankingUnsubscribe = null;
+
+// Objeto Dinossauro
+const dino = {
+    x: 50,
+    y: 0,
+    width: 40,
+    height: 50,
+    jumping: false,
+    velocityY: 0,
+    gravity: 0.8,
+    jumpPower: -15,
+    groundY: 330
+};
+
+// Array de Obstáculos
+let obstacles = [];
+
+// Configurações dos Obstáculos
+const obstacleConfig = {
+    width: 25,
+    height: 50,
+    color: '#27ae60',
+    minGap: 150,
+    maxGap: 300
+};
+
+// --- Inicializar Jogo ---
+function initGame() {
+    gameCanvas = document.getElementById('gameCanvas');
+    gameCtx = gameCanvas.getContext('2d');
+
+    // Ajustar dimensões do canvas para tela real
+    gameCanvas.width = 800;
+    gameCanvas.height = 400;
+
+    dino.y = dino.groundY;
+
+    // Carregar high score do localStorage
+    highScore = parseInt(localStorage.getItem('guriDinoHighScore')) || 0;
+    document.getElementById('high-score').textContent = highScore;
+}
+
+// --- Começar Jogo ---
+function startGame() {
+    // Verificar se está logado
+    if (!currentUser) {
+        document.getElementById('login-warning').style.display = 'block';
+        setTimeout(() => {
+            showPage('login');
+        }, 2000);
+        return;
+    }
+
+    // Esconder tela de início
+    document.getElementById('game-start-screen').style.display = 'none';
+    document.getElementById('game-over-screen').style.display = 'none';
+
+    // Reset variáveis
+    gameRunning = true;
+    gameScore = 0;
+    gameSpeed = 6;
+    gameFrameCount = 0;
+    obstacles = [];
+    dino.y = dino.groundY;
+    dino.velocityY = 0;
+    dino.jumping = false;
+
+    // Adicionar listeners de teclado
+    document.addEventListener('keydown', handleJump);
+
+    // Iniciar loop do jogo
+    gameLoop();
+}
+
+// --- Reiniciar Jogo ---
+function restartGame() {
+    document.getElementById('game-over-screen').style.display = 'none';
+    startGame();
+}
+
+// --- Pular ---
+function handleJump(e) {
+    if (!gameRunning) return;
+
+    if ((e.code === 'Space' || e.code === 'ArrowUp') && !dino.jumping) {
+        dino.velocityY = dino.jumpPower;
+        dino.jumping = true;
+    }
+}
+
+// --- Loop Principal do Jogo ---
+function gameLoop() {
+    if (!gameRunning) return;
+
+    // Limpar canvas
+    gameCtx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+
+    // Desenhar chão
+    drawGround();
+
+    // Atualizar e desenhar dinossauro
+    updateDino();
+    drawDino();
+
+    // Gerenciar obstáculos
+    updateObstacles();
+    drawObstacles();
+
+    // Verificar colisões
+    checkCollisions();
+
+    // Atualizar pontuação
+    gameScore++;
+    document.getElementById('current-score').textContent = Math.floor(gameScore / 10);
+
+    // Aumentar dificuldade
+    if (gameFrameCount % 500 === 0) {
+        gameSpeed += 0.5;
+    }
+
+    gameFrameCount++;
+
+    // Continuar loop
+    requestAnimationFrame(gameLoop);
+}
+
+// --- Desenhar Chão ---
+function drawGround() {
+    gameCtx.fillStyle = '#27ae60';
+    gameCtx.fillRect(0, 380, gameCanvas.width, 20);
+
+    // Linha decorativa
+    gameCtx.strokeStyle = '#2ecc71';
+    gameCtx.lineWidth = 3;
+    gameCtx.beginPath();
+    gameCtx.moveTo(0, 380);
+    gameCtx.lineTo(gameCanvas.width, 380);
+    gameCtx.stroke();
+}
+
+// --- Atualizar Dinossauro ---
+function updateDino() {
+    // Aplicar gravidade
+    dino.velocityY += dino.gravity;
+    dino.y += dino.velocityY;
+
+    // Verificar se tocou o chão
+    if (dino.y >= dino.groundY) {
+        dino.y = dino.groundY;
+        dino.velocityY = 0;
+        dino.jumping = false;
+    }
+}
+
+// --- Desenhar Dinossauro ---
+function drawDino() {
+    gameCtx.fillStyle = '#f1c40f';
+    gameCtx.fillRect(dino.x, dino.y, dino.width, dino.height);
+
+    // Olho
+    gameCtx.fillStyle = '#000';
+    gameCtx.fillRect(dino.x + 25, dino.y + 10, 5, 5);
+
+    // Contorno
+    gameCtx.strokeStyle = '#000';
+    gameCtx.lineWidth = 2;
+    gameCtx.strokeRect(dino.x, dino.y, dino.width, dino.height);
+}
+
+// --- Atualizar Obstáculos ---
+function updateObstacles() {
+    // Criar novo obstáculo
+    if (obstacles.length === 0 || obstacles[obstacles.length - 1].x < gameCanvas.width - 200) {
+        const gap = Math.random() * (obstacleConfig.maxGap - obstacleConfig.minGap) + obstacleConfig.minGap;
+
+        if (obstacles.length === 0 || gameCanvas.width - obstacles[obstacles.length - 1].x >= gap) {
+            obstacles.push({
+                x: gameCanvas.width,
+                y: 330,
+                width: obstacleConfig.width,
+                height: obstacleConfig.height
+            });
+        }
+    }
+
+    // Mover obstáculos
+    obstacles.forEach((obstacle, index) => {
+        obstacle.x -= gameSpeed;
+
+        // Remover obstáculos fora da tela
+        if (obstacle.x + obstacle.width < 0) {
+            obstacles.splice(index, 1);
+        }
+    });
+}
+
+// --- Desenhar Obstáculos ---
+function drawObstacles() {
+    gameCtx.fillStyle = obstacleConfig.color;
+
+    obstacles.forEach(obstacle => {
+        gameCtx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+
+        // Contorno
+        gameCtx.strokeStyle = '#000';
+        gameCtx.lineWidth = 2;
+        gameCtx.strokeRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+    });
+}
+
+// --- Verificar Colisões ---
+function checkCollisions() {
+    obstacles.forEach(obstacle => {
+        if (
+            dino.x < obstacle.x + obstacle.width &&
+            dino.x + dino.width > obstacle.x &&
+            dino.y < obstacle.y + obstacle.height &&
+            dino.y + dino.height > obstacle.y
+        ) {
+            gameOver();
+        }
+    });
+}
+
+// --- Game Over ---
+function gameOver() {
+    gameRunning = false;
+    document.removeEventListener('keydown', handleJump);
+
+    const finalScore = Math.floor(gameScore / 10);
+    document.getElementById('final-score').textContent = finalScore;
+
+    // Atualizar high score local
+    if (finalScore > highScore) {
+        highScore = finalScore;
+        localStorage.setItem('guriDinoHighScore', highScore);
+        document.getElementById('high-score').textContent = highScore;
+    }
+
+    // Salvar pontuação no Firestore
+    saveScore(finalScore);
+
+    // Mostrar tela de game over
+    document.getElementById('game-over-screen').style.display = 'block';
+}
+
+// --- Salvar Pontuação no Firestore ---
+function saveScore(score) {
+    const saveStatus = document.getElementById('save-status');
+    saveStatus.textContent = '⏳ Salvando pontuação...';
+    saveStatus.style.color = '#f1c40f';
+
+    if (!currentUser) {
+        saveStatus.textContent = '❌ Não logado - pontuação não salva';
+        saveStatus.style.color = '#ff0000';
+        return;
+    }
+
+    // Verificar se já existe um recorde do usuário
+    db.collection("dino_scores").doc(currentUser).get()
+        .then(doc => {
+            if (doc.exists) {
+                const currentHighScore = doc.data().score;
+
+                // Só atualiza se for um novo recorde
+                if (score > currentHighScore) {
+                    return db.collection("dino_scores").doc(currentUser).update({
+                        score: score,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                } else {
+                    saveStatus.textContent = `✅ Pontuação salva! Seu recorde é ${currentHighScore}`;
+                    saveStatus.style.color = '#27ae60';
+                    return Promise.resolve();
+                }
+            } else {
+                // Primeiro jogo do usuário
+                return db.collection("dino_scores").doc(currentUser).set({
+                    username: currentUser.toUpperCase(),
+                    score: score,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            }
+        })
+        .then(() => {
+            saveStatus.textContent = '🎉 Novo recorde salvo!';
+            saveStatus.style.color = '#27ae60';
+            loadRanking();
+        })
+        .catch(err => {
+            console.error('Erro ao salvar pontuação:', err);
+            saveStatus.textContent = '❌ Erro ao salvar: ' + err.message;
+            saveStatus.style.color = '#ff0000';
+        });
+}
+
+// --- Carregar Ranking ---
+function loadRanking() {
+    const rankingList = document.getElementById('ranking-list');
+
+    rankingUnsubscribe = db.collection("dino_scores")
+        .orderBy("score", "desc")
+        .limit(10)
+        .onSnapshot(
+            snapshot => {
+                rankingList.innerHTML = '';
+
+                if (snapshot.empty) {
+                    rankingList.innerHTML = '<p class="loading-text">Nenhuma pontuação ainda. Seja o primeiro!</p>';
+                    return;
+                }
+
+                snapshot.forEach((doc, index) => {
+                    const data = doc.data();
+                    const position = index + 1;
+
+                    const rankingItem = document.createElement('div');
+                    rankingItem.classList.add('ranking-item');
+
+                    // Adicionar classe especial para top 3
+                    if (position === 1) rankingItem.classList.add('top-1');
+                    if (position === 2) rankingItem.classList.add('top-2');
+                    if (position === 3) rankingItem.classList.add('top-3');
+
+                    // Emoji de medalha
+                    let medal = '';
+                    if (position === 1) medal = '🥇';
+                    else if (position === 2) medal = '🥈';
+                    else if (position === 3) medal = '🥉';
+                    else medal = `${position}º`;
+
+                    rankingItem.innerHTML = `
+                        <span class="ranking-position">${medal}</span>
+                        <span class="ranking-player">${data.username}</span>
+                        <span class="ranking-score">${data.score}</span>
+                    `;
+
+                    rankingList.appendChild(rankingItem);
+                });
+            },
+            error => {
+                console.error('Erro ao carregar ranking:', error);
+                rankingList.innerHTML = '<p style="color: red;">❌ Erro ao carregar ranking</p>';
+            }
+        );
 }
 
 // ====================================================================

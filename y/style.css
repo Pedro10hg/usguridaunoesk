@@ -874,6 +874,193 @@ nav a:hover {
 }
 
 /* ============================================================================
+   PÁGINA: JOGO DO DINOSSAURO
+   ============================================================================ */
+
+.jogo-container {
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    gap: 30px;
+    align-items: start;
+}
+
+.game-area {
+    background-color: var(--light);
+    padding: 30px;
+    border-radius: 15px;
+    border: 3px solid var(--primary);
+    box-shadow: 0 10px 30px rgba(39, 174, 96, 0.3);
+    position: relative;
+}
+
+#gameCanvas {
+    width: 100%;
+    max-width: 800px;
+    height: 400px;
+    background: linear-gradient(to bottom, #87ceeb 0%, #e0f6ff 100%);
+    border-radius: 10px;
+    display: block;
+    margin: 0 auto;
+    border: 2px solid var(--gray);
+}
+
+.game-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.95);
+    padding: 40px;
+    border-radius: 15px;
+    text-align: center;
+    z-index: 10;
+    border: 3px solid var(--primary);
+    min-width: 400px;
+}
+
+.game-overlay h3 {
+    color: var(--primary);
+    margin-bottom: 20px;
+    font-size: 2rem;
+}
+
+.game-overlay p {
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+}
+
+.game-overlay button {
+    margin-top: 20px;
+}
+
+.game-info {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+    padding: 15px;
+    background-color: rgba(39, 174, 96, 0.1);
+    border-radius: 10px;
+    border: 2px solid var(--primary);
+}
+
+.game-info p {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.game-info strong {
+    color: var(--primary);
+    font-size: 1.5rem;
+}
+
+/* Ranking */
+.ranking-area {
+    background-color: var(--light);
+    padding: 25px;
+    border-radius: 15px;
+    border: 3px solid var(--primary);
+    box-shadow: 0 10px 30px rgba(39, 174, 96, 0.3);
+    position: sticky;
+    top: 100px;
+}
+
+.ranking-area h3 {
+    color: var(--primary);
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+}
+
+.ranking-list {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.ranking-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.ranking-list::-webkit-scrollbar-track {
+    background: var(--gray);
+    border-radius: 3px;
+}
+
+.ranking-list::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 3px;
+}
+
+.ranking-item {
+    background: rgba(39, 174, 96, 0.1);
+    padding: 12px 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-left: 4px solid var(--primary);
+    transition: all 0.3s;
+}
+
+.ranking-item:hover {
+    background: rgba(39, 174, 96, 0.2);
+    transform: translateX(5px);
+}
+
+.ranking-item.top-1 {
+    border-left-color: #FFD700;
+    background: rgba(255, 215, 0, 0.15);
+}
+
+.ranking-item.top-2 {
+    border-left-color: #C0C0C0;
+    background: rgba(192, 192, 192, 0.15);
+}
+
+.ranking-item.top-3 {
+    border-left-color: #CD7F32;
+    background: rgba(205, 127, 50, 0.15);
+}
+
+.ranking-position {
+    font-weight: bold;
+    color: var(--primary);
+    font-size: 1.3rem;
+    min-width: 35px;
+}
+
+.ranking-item.top-1 .ranking-position {
+    color: #FFD700;
+}
+
+.ranking-item.top-2 .ranking-position {
+    color: #C0C0C0;
+}
+
+.ranking-item.top-3 .ranking-position {
+    color: #CD7F32;
+}
+
+.ranking-player {
+    flex: 1;
+    margin: 0 15px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.ranking-score {
+    font-weight: bold;
+    color: var(--accent);
+    font-size: 1.1rem;
+}
+
+.loading-text {
+    text-align: center;
+    color: var(--primary);
+    font-style: italic;
+}
+
+/* ============================================================================
    PÁGINA: LOGIN / CADASTRO
    ============================================================================ */
 
@@ -1057,6 +1244,25 @@ footer {
     /* Posts menores em celular */
     .photo-item img,
     .photo-item video {
+        height: 300px;
+    }
+
+    /* Jogo empilhado em mobile */
+    .jogo-container {
+        grid-template-columns: 1fr;
+    }
+
+    .ranking-area {
+        position: static;
+    }
+
+    .game-overlay {
+        min-width: 280px;
+        padding: 20px;
+    }
+
+    #gameCanvas {
+        width: 100%;
         height: 300px;
     }
 }

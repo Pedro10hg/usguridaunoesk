@@ -38,12 +38,13 @@
                 <!-- Menu de Navegação -->
                 <nav>
                     <ul id="navMenu">
-                        <li><a href="#" onclick="showPage('administradores')"></i> Administradores</a></li>
-                        <li><a href="#" onclick="showPage('fundadores')"></i> Fundadores</a></li>
-                        <li><a href="#" onclick="showPage('camiseta')"></i> Camiseta</a></li>
-                        <li><a href="#" onclick="showPage('recados')"></i> Recados</a></li>
-                        <li><a href="#" onclick="showPage('chat')"></i> Chat</a></li>
-                        <li><a href="#" onclick="showPage('galeria')"></i> Galeria</a></li>
+                        <li><a href="#" onclick="showPage('administradores')"><i class="fas fa-users"></i> Administradores</a></li>
+                        <li><a href="#" onclick="showPage('fundadores')"><i class="fas fa-crown"></i> Fundadores</a></li>
+                        <li><a href="#" onclick="showPage('camiseta')"><i class="fas fa-tshirt"></i> Camiseta</a></li>
+                        <li><a href="#" onclick="showPage('recados')"><i class="fas fa-comments"></i> Recados</a></li>
+                        <li><a href="#" onclick="showPage('chat')"><i class="fas fa-comment-dots"></i> Chat</a></li>
+                        <li><a href="#" onclick="showPage('galeria')"><i class="fas fa-images"></i> Galeria</a></li>
+                        <li><a href="#" onclick="showPage('jogo')"><i class="fas fa-gamepad"></i> Jogo</a></li>
                     </ul>
                 </nav>
 
@@ -328,6 +329,57 @@
             <!-- Grid de Fotos -->
             <div id="photos-container" class="galeria-grid">
                 <p>Carregando as melhores zoeiras...</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- PÁGINA: JOGO DO DINOSSAURO                -->
+    <!-- ========================================== -->
+    <section id="jogo" class="page">
+        <div class="container">
+            <div class="section-title">
+                <h2>🦖 Jogo do Guri - Dino Runner</h2>
+            </div>
+
+            <div class="jogo-container">
+                <!-- Área do Jogo -->
+                <div class="game-area">
+                    <!-- Tela de Início -->
+                    <div id="game-start-screen" class="game-overlay">
+                        <h3>🎮 Dino Runner - Us Guri Edition</h3>
+                        <p>Pressione <strong>ESPAÇO</strong> ou <strong>SETA PRA CIMA</strong> para pular!</p>
+                        <p id="login-warning" style="display: none; color: #ff0000; font-weight: bold;">
+                            ⚠️ Você precisa estar logado para jogar!
+                        </p>
+                        <button id="start-game-btn" class="btn-submit" onclick="startGame()">Começar Jogo</button>
+                    </div>
+
+                    <!-- Tela de Game Over -->
+                    <div id="game-over-screen" class="game-overlay" style="display: none;">
+                        <h3>💀 Game Over!</h3>
+                        <p>Sua Pontuação: <strong id="final-score">0</strong></p>
+                        <p id="save-status"></p>
+                        <button class="btn-submit" onclick="restartGame()">Jogar Novamente</button>
+                    </div>
+
+                    <!-- Canvas do Jogo -->
+                    <canvas id="gameCanvas" width="800" height="400"></canvas>
+
+                    <!-- Placar Atual -->
+                    <div class="game-info">
+                        <p>Pontuação: <strong id="current-score">0</strong></p>
+                        <p>Recorde: <strong id="high-score">0</strong></p>
+                    </div>
+                </div>
+
+                <!-- Ranking -->
+                <div class="ranking-area">
+                    <h3>🏆 Top 10 - Melhores Guris</h3>
+                    <div id="ranking-list" class="ranking-list">
+                        <p class="loading-text">Carregando ranking...</p>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
