@@ -1181,20 +1181,23 @@ function enableAntiCheat() {
     console.info = function() {};
     console.debug = function() {};
 
-    // Detectar tentativa de abrir DevTools
-    const detectDevTools = () => {
-        const threshold = 160;
-        if (window.outerWidth - window.innerWidth > threshold ||
-            window.outerHeight - window.innerHeight > threshold) {
-            if (gameRunning) {
-                gameOver();
-                alert('⚠️ DevTools detectado! Jogo encerrado para manter a integridade do ranking.');
-            }
-        }
-    };
+    // Detectar DevTools apenas no desktop (mobile tem falsos positivos)
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-    // Verificar a cada 1 segundo
-    window.antiCheatInterval = setInterval(detectDevTools, 1000);
+    if (!isMobile) {
+        const detectDevTools = () => {
+            const threshold = 160;
+            if (window.outerWidth - window.innerWidth > threshold ||
+                window.outerHeight - window.innerHeight > threshold) {
+                if (gameRunning) {
+                    gameOver();
+                    alert('⚠️ DevTools detectado! Jogo encerrado para manter a integridade do ranking.');
+                }
+            }
+        };
+        // Verificar a cada 1 segundo
+        window.antiCheatInterval = setInterval(detectDevTools, 1000);
+    }
 }
 
 // --- Desativar Proteção Anti-Cheat ---
@@ -1833,18 +1836,22 @@ function enableSnakeAntiCheat() {
     console.info = function() {};
     console.debug = function() {};
 
-    const detectDevTools = () => {
-        const threshold = 160;
-        if (window.outerWidth - window.innerWidth > threshold ||
-            window.outerHeight - window.innerHeight > threshold) {
-            if (snakeRunning) {
-                snakeGameOver();
-                alert('⚠️ DevTools detectado! Jogo encerrado para manter a integridade do ranking.');
-            }
-        }
-    };
+    // Detectar DevTools apenas no desktop (mobile tem falsos positivos)
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-    snakeAntiCheatInterval = setInterval(detectDevTools, 1000);
+    if (!isMobile) {
+        const detectDevTools = () => {
+            const threshold = 160;
+            if (window.outerWidth - window.innerWidth > threshold ||
+                window.outerHeight - window.innerHeight > threshold) {
+                if (snakeRunning) {
+                    snakeGameOver();
+                    alert('⚠️ DevTools detectado! Jogo encerrado para manter a integridade do ranking.');
+                }
+            }
+        };
+        snakeAntiCheatInterval = setInterval(detectDevTools, 1000);
+    }
 }
 
 function disableSnakeAntiCheat() {
