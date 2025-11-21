@@ -1017,9 +1017,10 @@ function loadRanking() {
                     return;
                 }
 
-                snapshot.forEach((doc, index) => {
+                let position = 0;
+                snapshot.forEach((doc) => {
                     const data = doc.data();
-                    const position = index + 1;
+                    position++;
 
                     const rankingItem = document.createElement('div');
                     rankingItem.classList.add('ranking-item');
@@ -1031,15 +1032,23 @@ function loadRanking() {
 
                     // Emoji de medalha
                     let medal = '';
-                    if (position === 1) medal = '🥇';
-                    else if (position === 2) medal = '🥈';
-                    else if (position === 3) medal = '🥉';
-                    else medal = `${position}º`;
+                    if (position === 1) {
+                        medal = '🥇';
+                    } else if (position === 2) {
+                        medal = '🥈';
+                    } else if (position === 3) {
+                        medal = '🥉';
+                    } else {
+                        medal = position + 'º';
+                    }
+
+                    const playerName = data.username || 'Anônimo';
+                    const playerScore = data.score || 0;
 
                     rankingItem.innerHTML = `
                         <span class="ranking-position">${medal}</span>
-                        <span class="ranking-player">${data.username}</span>
-                        <span class="ranking-score">${data.score}</span>
+                        <span class="ranking-player">${playerName}</span>
+                        <span class="ranking-score">${playerScore}</span>
                     `;
 
                     rankingList.appendChild(rankingItem);
