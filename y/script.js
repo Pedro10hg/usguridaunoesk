@@ -57,6 +57,11 @@ function showPage(pageId) {
     if (gameRunning) {
         gameRunning = false;
         document.removeEventListener('keydown', handleJump);
+        const canvas = document.getElementById('gameCanvas');
+        if (canvas) {
+            canvas.removeEventListener('click', handleTouchJump);
+            canvas.removeEventListener('touchstart', handleTouchJump);
+        }
     }
 
     // Troca a página ativa
@@ -751,8 +756,10 @@ function startGame() {
     dino.velocityY = 0;
     dino.jumping = false;
 
-    // Adicionar listeners de teclado
+    // Adicionar listeners de teclado e toque
     document.addEventListener('keydown', handleJump);
+    gameCanvas.addEventListener('click', handleTouchJump);
+    gameCanvas.addEventListener('touchstart', handleTouchJump);
 
     // Iniciar loop do jogo
     gameLoop();
@@ -764,11 +771,22 @@ function restartGame() {
     startGame();
 }
 
-// --- Pular ---
+// --- Pular (Teclado) ---
 function handleJump(e) {
     if (!gameRunning) return;
 
     if ((e.code === 'Space' || e.code === 'ArrowUp') && !dino.jumping) {
+        dino.velocityY = dino.jumpPower;
+        dino.jumping = true;
+    }
+}
+
+// --- Pular (Toque/Click) ---
+function handleTouchJump(e) {
+    e.preventDefault();
+    if (!gameRunning) return;
+
+    if (!dino.jumping) {
         dino.velocityY = dino.jumpPower;
         dino.jumping = true;
     }
@@ -912,6 +930,8 @@ function checkCollisions() {
 function gameOver() {
     gameRunning = false;
     document.removeEventListener('keydown', handleJump);
+    gameCanvas.removeEventListener('click', handleTouchJump);
+    gameCanvas.removeEventListener('touchstart', handleTouchJump);
 
     const finalScore = Math.floor(gameScore / 10);
     document.getElementById('final-score').textContent = finalScore;
