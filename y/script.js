@@ -726,7 +726,10 @@ const dino = {
     jumpPower: -13,
     groundY: 333,
     coyoteTime: 0,
-    coyoteTimeMax: 8  // Frames após deixar o chão que ainda pode pular
+    coyoteTimeMax: 8,  // Frames após deixar o chão que ainda pode pular
+    jumpBuffered: false,  // Se o jogador tentou pular no ar
+    jumpBufferTime: 0,    // Frames desde que tentou pular
+    jumpBufferMax: 10     // Frames que o buffer de pulo dura
 };
 
 // Array de Obstáculos
@@ -783,6 +786,8 @@ function startGame() {
     dino.velocityY = 0;
     dino.jumping = false;
     dino.coyoteTime = 0;
+    dino.jumpBuffered = false;
+    dino.jumpBufferTime = 0;
 
     // Ativar proteção anti-cheat
     enableAntiCheat();
@@ -811,11 +816,18 @@ function handleJump(e) {
         e.preventDefault();
     }
 
-    // Coyote time: permite pular se estiver no chão ou recém saiu do chão
-    if ((e.code === 'Space' || e.code === 'ArrowUp') && (!dino.jumping || dino.coyoteTime < dino.coyoteTimeMax)) {
-        dino.velocityY = dino.jumpPower;
-        dino.jumping = true;
-        dino.coyoteTime = dino.coyoteTimeMax; // Marca que já usou o pulo
+    if (e.code === 'Space' || e.code === 'ArrowUp') {
+        // Coyote time: permite pular se estiver no chão ou recém saiu do chão
+        if (!dino.jumping || dino.coyoteTime < dino.coyoteTimeMax) {
+            dino.velocityY = dino.jumpPower;
+            dino.jumping = true;
+            dino.coyoteTime = dino.coyoteTimeMax;
+            dino.jumpBuffered = false; // Limpa buffer ao pular
+        } else {
+            // Jump buffer: guarda a intenção de pular para quando tocar o chão
+            dino.jumpBuffered = true;
+            dino.jumpBufferTime = 0;
+        }
     }
 }
 
@@ -828,7 +840,12 @@ function handleTouchJump(e) {
     if (!dino.jumping || dino.coyoteTime < dino.coyoteTimeMax) {
         dino.velocityY = dino.jumpPower;
         dino.jumping = true;
-        dino.coyoteTime = dino.coyoteTimeMax; // Marca que já usou o pulo
+        dino.coyoteTime = dino.coyoteTimeMax;
+        dino.jumpBuffered = false; // Limpa buffer ao pular
+    } else {
+        // Jump buffer: guarda a intenção de pular para quando tocar o chão
+        dino.jumpBuffered = true;
+        dino.jumpBufferTime = 0;
     }
 }
 
@@ -928,12 +945,28 @@ function updateDino() {
     dino.velocityY += dino.gravity;
     dino.y += dino.velocityY;
 
+    // Incrementar tempo do jump buffer
+    if (dino.jumpBuffered) {
+        dino.jumpBufferTime++;
+        // Expirar buffer após tempo máximo
+        if (dino.jumpBufferTime > dino.jumpBufferMax) {
+            dino.jumpBuffered = false;
+        }
+    }
+
     // Verificar se tocou o chão
     if (dino.y >= dino.groundY) {
         dino.y = dino.groundY;
         dino.velocityY = 0;
         dino.jumping = false;
         dino.coyoteTime = 0; // Reset coyote time no chão
+
+        // Jump buffer: se apertou pulo antes de tocar o chão, pula agora!
+        if (dino.jumpBuffered) {
+            dino.velocityY = dino.jumpPower;
+            dino.jumping = true;
+            dino.jumpBuffered = false;
+        }
     } else {
         // Incrementar coyote time quando está no ar
         if (dino.coyoteTime < dino.coyoteTimeMax) {
