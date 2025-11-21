@@ -1848,6 +1848,21 @@ window.addEventListener('load', () => {
         document.getElementById('navMenu').classList.toggle('active');
     });
 
+    // Dropdown toggle para mobile
+    const dropdowns = document.querySelectorAll('.dropdown');
+    dropdowns.forEach(dropdown => {
+        const toggle = dropdown.querySelector('.dropdown-toggle');
+        if (toggle) {
+            toggle.addEventListener('click', function(e) {
+                // Só funciona em mobile
+                if (window.innerWidth <= 768) {
+                    e.preventDefault();
+                    dropdown.classList.toggle('active');
+                }
+            });
+        }
+    });
+
     // Listener para enviar mensagem com Enter no chat
     const chatInput = document.getElementById('chat-input');
     if (chatInput) {
