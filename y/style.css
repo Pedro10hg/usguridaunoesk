@@ -1667,6 +1667,28 @@ footer {
         height: 300px;
     }
 
+    #snakeCanvas {
+        width: 100%;
+        max-width: 280px;
+        height: 280px;
+    }
+
+    /* D-pad menor no mobile */
+    .dpad-btn {
+        width: 50px;
+        height: 50px;
+        font-size: 1.2rem;
+    }
+
+    .dpad-center {
+        width: 50px;
+        height: 50px;
+    }
+
+    .mobile-controls {
+        margin-top: 15px;
+    }
+
     .game-info {
         flex-direction: column;
         gap: 10px;
@@ -2010,6 +2032,30 @@ footer {
 
     #gameCanvas {
         height: 250px;
+    }
+
+    #snakeCanvas {
+        max-width: 240px;
+        height: 240px;
+    }
+
+    .dpad-btn {
+        width: 45px;
+        height: 45px;
+        font-size: 1rem;
+    }
+
+    .dpad-center {
+        width: 45px;
+        height: 45px;
+    }
+
+    .dpad-container {
+        gap: 3px;
+    }
+
+    .dpad-middle-row {
+        gap: 3px;
     }
 
     .ranking-area {
