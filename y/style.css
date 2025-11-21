@@ -118,7 +118,7 @@ header {
 nav {
     flex: 1;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
 }
 
 nav ul {
@@ -143,6 +143,55 @@ nav a {
 nav a:hover {
     color: white;
     background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* --- DROPDOWN MENU --- */
+
+.dropdown {
+    position: relative;
+}
+
+.dropdown-toggle {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: linear-gradient(135deg, var(--primary), #1e8449);
+    min-width: 180px;
+    border-radius: 8px;
+    padding: 8px 0;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+    flex-direction: column;
+    margin-top: 5px;
+}
+
+.dropdown:hover .dropdown-menu {
+    display: flex;
+}
+
+.dropdown-menu li {
+    width: 100%;
+}
+
+.dropdown-menu a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    width: 100%;
+    border-radius: 0;
+    transition: background-color 0.3s;
+}
+
+.dropdown-menu a:hover {
+    background-color: rgba(255, 255, 255, 0.2);
 }
 
 /* --- ÁREA DO USUÁRIO --- */
@@ -1325,6 +1374,26 @@ footer {
         padding: 12px 16px;
         font-size: 0.95rem;
         display: block;
+    }
+
+    /* Dropdown mobile */
+    .dropdown-menu {
+        position: static;
+        display: none;
+        background: rgba(0, 0, 0, 0.2);
+        box-shadow: none;
+        margin-top: 0;
+        padding: 0;
+        border-radius: 0;
+        min-width: 100%;
+    }
+
+    .dropdown.active .dropdown-menu {
+        display: flex;
+    }
+
+    .dropdown-menu a {
+        padding-left: 40px;
     }
 
     /* Área de usuário */
