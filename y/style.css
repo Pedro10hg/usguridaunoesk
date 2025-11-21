@@ -877,6 +877,15 @@ nav a:hover {
    PÁGINA: JOGO DO DINOSSAURO
    ============================================================================ */
 
+/* Utilitários de Visibilidade */
+.desktop-only {
+    display: block;
+}
+
+.mobile-only {
+    display: none;
+}
+
 .jogo-container {
     display: grid;
     grid-template-columns: 1fr 350px;
@@ -902,6 +911,9 @@ nav a:hover {
     display: block;
     margin: 0 auto;
     border: 2px solid var(--gray);
+    cursor: pointer;
+    touch-action: none;
+    user-select: none;
 }
 
 .game-overlay {
@@ -916,6 +928,7 @@ nav a:hover {
     z-index: 10;
     border: 3px solid var(--primary);
     min-width: 400px;
+    max-width: 90%;
 }
 
 .game-overlay h3 {
@@ -1250,19 +1263,121 @@ footer {
     /* Jogo empilhado em mobile */
     .jogo-container {
         grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .game-area {
+        padding: 15px;
     }
 
     .ranking-area {
         position: static;
+        padding: 20px;
+    }
+
+    .ranking-area h3 {
+        font-size: 1.3rem;
     }
 
     .game-overlay {
-        min-width: 280px;
-        padding: 20px;
+        min-width: 250px;
+        padding: 25px 20px;
+        border-width: 2px;
+    }
+
+    .game-overlay h3 {
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+    }
+
+    .game-overlay p {
+        font-size: 1rem;
+        margin-bottom: 12px;
+    }
+
+    .game-overlay button {
+        font-size: 1rem;
+        padding: 12px;
     }
 
     #gameCanvas {
         width: 100%;
         height: 300px;
+    }
+
+    .game-info {
+        flex-direction: column;
+        gap: 10px;
+        padding: 12px;
+    }
+
+    .game-info p {
+        font-size: 1rem;
+    }
+
+    .game-info strong {
+        font-size: 1.3rem;
+    }
+
+    /* Alternar visibilidade de instruções */
+    .desktop-only {
+        display: none;
+    }
+
+    .mobile-only {
+        display: block;
+    }
+
+    /* Ranking em mobile */
+    .ranking-list {
+        max-height: 400px;
+    }
+
+    .ranking-item {
+        padding: 10px 12px;
+    }
+
+    .ranking-position {
+        font-size: 1.1rem;
+        min-width: 30px;
+    }
+
+    .ranking-player {
+        font-size: 0.95rem;
+        margin: 0 10px;
+    }
+
+    .ranking-score {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Ajustes extras para telas muito pequenas */
+    .section-title h2 {
+        font-size: 1.8rem;
+    }
+
+    .game-overlay h3 {
+        font-size: 1.3rem;
+    }
+
+    .game-overlay {
+        padding: 20px 15px;
+        min-width: 200px;
+    }
+
+    #gameCanvas {
+        height: 250px;
+    }
+
+    .ranking-item {
+        font-size: 0.9rem;
+        padding: 8px 10px;
+    }
+
+    .ranking-position {
+        font-size: 1rem;
+        min-width: 25px;
     }
 }
