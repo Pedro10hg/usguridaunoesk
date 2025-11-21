@@ -685,7 +685,7 @@ function getDefaultAvatar() {
 let gameCanvas, gameCtx;
 let gameRunning = false;
 let gameScore = 0;
-let gameSpeed = 6;
+let gameSpeed = 5;
 let gameFrameCount = 0;
 let highScore = 0;
 let rankingUnsubscribe = null;
@@ -694,13 +694,13 @@ let rankingUnsubscribe = null;
 const dino = {
     x: 50,
     y: 0,
-    width: 40,
-    height: 50,
+    width: 44,
+    height: 47,
     jumping: false,
     velocityY: 0,
-    gravity: 0.8,
-    jumpPower: -15,
-    groundY: 330
+    gravity: 0.6,
+    jumpPower: -13,
+    groundY: 333
 };
 
 // Array de Obstáculos
@@ -708,11 +708,12 @@ let obstacles = [];
 
 // Configurações dos Obstáculos
 const obstacleConfig = {
-    width: 25,
-    height: 50,
+    width: 20,
+    minHeight: 40,
+    maxHeight: 60,
     color: '#27ae60',
-    minGap: 150,
-    maxGap: 300
+    minGap: 200,
+    maxGap: 400
 };
 
 // --- Inicializar Jogo ---
@@ -749,7 +750,7 @@ function startGame() {
     // Reset variáveis
     gameRunning = true;
     gameScore = 0;
-    gameSpeed = 6;
+    gameSpeed = 5;
     gameFrameCount = 0;
     obstacles = [];
     dino.y = dino.groundY;
@@ -792,12 +793,50 @@ function handleTouchJump(e) {
     }
 }
 
+// --- Desenhar Nuvens ---
+function drawClouds() {
+    gameCtx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+    gameCtx.strokeStyle = 'rgba(200, 200, 200, 0.5)';
+    gameCtx.lineWidth = 1;
+
+    // Nuvens que se movem lentamente
+    const cloudOffset = (gameFrameCount * 0.5) % 900;
+
+    // Nuvem 1
+    let x1 = 100 - cloudOffset;
+    if (x1 < -80) x1 += 900;
+    drawCloud(x1, 50);
+
+    // Nuvem 2
+    let x2 = 350 - cloudOffset;
+    if (x2 < -80) x2 += 900;
+    drawCloud(x2, 80);
+
+    // Nuvem 3
+    let x3 = 600 - cloudOffset;
+    if (x3 < -80) x3 += 900;
+    drawCloud(x3, 40);
+}
+
+// --- Desenhar uma Nuvem ---
+function drawCloud(x, y) {
+    gameCtx.beginPath();
+    gameCtx.arc(x, y, 15, 0, Math.PI * 2);
+    gameCtx.arc(x + 20, y, 20, 0, Math.PI * 2);
+    gameCtx.arc(x + 40, y, 15, 0, Math.PI * 2);
+    gameCtx.fill();
+    gameCtx.stroke();
+}
+
 // --- Loop Principal do Jogo ---
 function gameLoop() {
     if (!gameRunning) return;
 
     // Limpar canvas
     gameCtx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+
+    // Desenhar nuvens
+    drawClouds();
 
     // Desenhar chão
     drawGround();
@@ -815,11 +854,12 @@ function gameLoop() {
 
     // Atualizar pontuação
     gameScore++;
-    document.getElementById('current-score').textContent = Math.floor(gameScore / 10);
+    const currentScore = Math.floor(gameScore / 10);
+    document.getElementById('current-score').textContent = currentScore;
 
-    // Aumentar dificuldade
-    if (gameFrameCount % 500 === 0) {
-        gameSpeed += 0.5;
+    // Aumentar dificuldade gradualmente (a cada 100 pontos)
+    if (gameFrameCount % 1000 === 0 && gameSpeed < 12) {
+        gameSpeed += 0.3;
     }
 
     gameFrameCount++;
@@ -830,16 +870,35 @@ function gameLoop() {
 
 // --- Desenhar Chão ---
 function drawGround() {
-    gameCtx.fillStyle = '#27ae60';
-    gameCtx.fillRect(0, 380, gameCanvas.width, 20);
-
-    // Linha decorativa
-    gameCtx.strokeStyle = '#2ecc71';
-    gameCtx.lineWidth = 3;
+    // Linha do chão
+    gameCtx.strokeStyle = '#27ae60';
+    gameCtx.lineWidth = 4;
     gameCtx.beginPath();
     gameCtx.moveTo(0, 380);
     gameCtx.lineTo(gameCanvas.width, 380);
     gameCtx.stroke();
+
+    // Detalhes de grama (movem com o jogo)
+    gameCtx.strokeStyle = '#2ecc71';
+    gameCtx.lineWidth = 2;
+    const grassOffset = (gameFrameCount * gameSpeed) % 30;
+    for (let i = -1; i < gameCanvas.width / 30 + 1; i++) {
+        const x = i * 30 - grassOffset;
+        gameCtx.beginPath();
+        gameCtx.moveTo(x, 380);
+        gameCtx.lineTo(x + 3, 375);
+        gameCtx.stroke();
+
+        gameCtx.beginPath();
+        gameCtx.moveTo(x + 8, 380);
+        gameCtx.lineTo(x + 11, 376);
+        gameCtx.stroke();
+
+        gameCtx.beginPath();
+        gameCtx.moveTo(x + 16, 380);
+        gameCtx.lineTo(x + 19, 377);
+        gameCtx.stroke();
+    }
 }
 
 // --- Atualizar Dinossauro ---
@@ -858,31 +917,63 @@ function updateDino() {
 
 // --- Desenhar Dinossauro ---
 function drawDino() {
+    const x = dino.x;
+    const y = dino.y;
+
     gameCtx.fillStyle = '#f1c40f';
-    gameCtx.fillRect(dino.x, dino.y, dino.width, dino.height);
+    gameCtx.strokeStyle = '#000';
+    gameCtx.lineWidth = 2;
+
+    // Corpo principal
+    gameCtx.fillRect(x + 8, y + 20, 28, 20);
+    gameCtx.strokeRect(x + 8, y + 20, 28, 20);
+
+    // Cabeça
+    gameCtx.fillRect(x + 28, y + 8, 16, 18);
+    gameCtx.strokeRect(x + 28, y + 8, 16, 18);
 
     // Olho
     gameCtx.fillStyle = '#000';
-    gameCtx.fillRect(dino.x + 25, dino.y + 10, 5, 5);
+    gameCtx.fillRect(x + 35, y + 12, 4, 4);
 
-    // Contorno
+    // Boca
     gameCtx.strokeStyle = '#000';
+    gameCtx.lineWidth = 1.5;
+    gameCtx.beginPath();
+    gameCtx.moveTo(x + 42, y + 20);
+    gameCtx.lineTo(x + 38, y + 20);
+    gameCtx.stroke();
     gameCtx.lineWidth = 2;
-    gameCtx.strokeRect(dino.x, dino.y, dino.width, dino.height);
+
+    gameCtx.fillStyle = '#f1c40f';
+
+    // Cauda
+    gameCtx.fillRect(x + 2, y + 24, 8, 8);
+    gameCtx.strokeRect(x + 2, y + 24, 8, 8);
+
+    // Perna traseira
+    gameCtx.fillRect(x + 12, y + 40, 6, 7);
+    gameCtx.strokeRect(x + 12, y + 40, 6, 7);
+
+    // Perna dianteira (animação simples baseada no frame)
+    const legOffset = dino.jumping ? 0 : Math.floor(gameFrameCount / 10) % 2 * 2;
+    gameCtx.fillRect(x + 26, y + 40 + legOffset, 6, 7 - legOffset);
+    gameCtx.strokeRect(x + 26, y + 40 + legOffset, 6, 7 - legOffset);
 }
 
 // --- Atualizar Obstáculos ---
 function updateObstacles() {
     // Criar novo obstáculo
-    if (obstacles.length === 0 || obstacles[obstacles.length - 1].x < gameCanvas.width - 200) {
+    if (obstacles.length === 0 || obstacles[obstacles.length - 1].x < gameCanvas.width - 250) {
         const gap = Math.random() * (obstacleConfig.maxGap - obstacleConfig.minGap) + obstacleConfig.minGap;
 
         if (obstacles.length === 0 || gameCanvas.width - obstacles[obstacles.length - 1].x >= gap) {
+            const height = Math.random() * (obstacleConfig.maxHeight - obstacleConfig.minHeight) + obstacleConfig.minHeight;
             obstacles.push({
                 x: gameCanvas.width,
-                y: 330,
+                y: 380 - height,
                 width: obstacleConfig.width,
-                height: obstacleConfig.height
+                height: height
             });
         }
     }
@@ -900,26 +991,74 @@ function updateObstacles() {
 
 // --- Desenhar Obstáculos ---
 function drawObstacles() {
-    gameCtx.fillStyle = obstacleConfig.color;
-
     obstacles.forEach(obstacle => {
-        gameCtx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+        const x = obstacle.x;
+        const y = obstacle.y;
+        const w = obstacle.width;
+        const h = obstacle.height;
 
-        // Contorno
+        gameCtx.fillStyle = '#27ae60';
         gameCtx.strokeStyle = '#000';
         gameCtx.lineWidth = 2;
-        gameCtx.strokeRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+
+        // Tronco principal do cacto
+        gameCtx.fillRect(x + 6, y, 8, h);
+        gameCtx.strokeRect(x + 6, y, 8, h);
+
+        // Braços do cacto (variam com a altura)
+        if (h > 45) {
+            // Braço esquerdo
+            gameCtx.fillRect(x, y + h * 0.3, 8, h * 0.35);
+            gameCtx.strokeRect(x, y + h * 0.3, 8, h * 0.35);
+
+            // Braço direito
+            gameCtx.fillRect(x + 12, y + h * 0.4, 8, h * 0.4);
+            gameCtx.strokeRect(x + 12, y + h * 0.4, 8, h * 0.4);
+        } else {
+            // Cacto pequeno - só um braço
+            gameCtx.fillRect(x + 12, y + h * 0.4, 6, h * 0.5);
+            gameCtx.strokeRect(x + 12, y + h * 0.4, 6, h * 0.5);
+        }
+
+        // Detalhes (espinhos) - linhas pequenas
+        gameCtx.strokeStyle = '#1e7e34';
+        gameCtx.lineWidth = 1;
+        for (let i = 0; i < 3; i++) {
+            const spinY = y + (h / 4) * (i + 0.5);
+            gameCtx.beginPath();
+            gameCtx.moveTo(x + 6, spinY);
+            gameCtx.lineTo(x + 4, spinY);
+            gameCtx.stroke();
+
+            gameCtx.beginPath();
+            gameCtx.moveTo(x + 14, spinY);
+            gameCtx.lineTo(x + 16, spinY);
+            gameCtx.stroke();
+        }
     });
 }
 
 // --- Verificar Colisões ---
 function checkCollisions() {
     obstacles.forEach(obstacle => {
+        // Hitbox do dinossauro (ajustada para o corpo principal)
+        const dinoLeft = dino.x + 8;
+        const dinoRight = dino.x + 38;
+        const dinoTop = dino.y + 8;
+        const dinoBottom = dino.y + dino.height;
+
+        // Hitbox do cacto (tronco principal + braços)
+        const cactusLeft = obstacle.x;
+        const cactusRight = obstacle.x + obstacle.width;
+        const cactusTop = obstacle.y;
+        const cactusBottom = obstacle.y + obstacle.height;
+
+        // Detecção de colisão com margem reduzida (mais perdoador)
         if (
-            dino.x < obstacle.x + obstacle.width &&
-            dino.x + dino.width > obstacle.x &&
-            dino.y < obstacle.y + obstacle.height &&
-            dino.y + dino.height > obstacle.y
+            dinoRight > cactusLeft + 5 &&
+            dinoLeft < cactusRight - 5 &&
+            dinoBottom > cactusTop + 5 &&
+            dinoTop < cactusBottom
         ) {
             gameOver();
         }
