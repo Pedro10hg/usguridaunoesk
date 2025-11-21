@@ -700,7 +700,9 @@ const dino = {
     velocityY: 0,
     gravity: 0.6,
     jumpPower: -13,
-    groundY: 333
+    groundY: 333,
+    coyoteTime: 0,
+    coyoteTimeMax: 8  // Frames após deixar o chão que ainda pode pular
 };
 
 // Array de Obstáculos
@@ -713,7 +715,7 @@ const obstacleConfig = {
     maxHeight: 60,
     color: '#27ae60',
     minGap: 200,
-    maxGap: 400
+    maxGap: 7000
 };
 
 // --- Inicializar Jogo ---
@@ -756,6 +758,10 @@ function startGame() {
     dino.y = dino.groundY;
     dino.velocityY = 0;
     dino.jumping = false;
+    dino.coyoteTime = 0;
+
+    // Ativar proteção anti-cheat
+    enableAntiCheat();
 
     // Adicionar listeners de teclado e toque
     document.addEventListener('keydown', handleJump);
@@ -776,9 +782,16 @@ function restartGame() {
 function handleJump(e) {
     if (!gameRunning) return;
 
-    if ((e.code === 'Space' || e.code === 'ArrowUp') && !dino.jumping) {
+    // Prevenir scroll da página
+    if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'ArrowDown') {
+        e.preventDefault();
+    }
+
+    // Coyote time: permite pular se estiver no chão ou recém saiu do chão
+    if ((e.code === 'Space' || e.code === 'ArrowUp') && (!dino.jumping || dino.coyoteTime < dino.coyoteTimeMax)) {
         dino.velocityY = dino.jumpPower;
         dino.jumping = true;
+        dino.coyoteTime = dino.coyoteTimeMax; // Marca que já usou o pulo
     }
 }
 
@@ -787,9 +800,11 @@ function handleTouchJump(e) {
     e.preventDefault();
     if (!gameRunning) return;
 
-    if (!dino.jumping) {
+    // Coyote time: permite pular se estiver no chão ou recém saiu do chão
+    if (!dino.jumping || dino.coyoteTime < dino.coyoteTimeMax) {
         dino.velocityY = dino.jumpPower;
         dino.jumping = true;
+        dino.coyoteTime = dino.coyoteTimeMax; // Marca que já usou o pulo
     }
 }
 
@@ -857,9 +872,9 @@ function gameLoop() {
     const currentScore = Math.floor(gameScore / 10);
     document.getElementById('current-score').textContent = currentScore;
 
-    // Aumentar dificuldade gradualmente (a cada 100 pontos)
-    if (gameFrameCount % 1000 === 0 && gameSpeed < 12) {
-        gameSpeed += 0.3;
+    // Aumentar dificuldade gradualmente (a cada 50 pontos)
+    if (gameScore % 500 === 0 && gameScore > 0 && gameSpeed < 20) {
+        gameSpeed += 0.5;
     }
 
     gameFrameCount++;
@@ -870,35 +885,17 @@ function gameLoop() {
 
 // --- Desenhar Chão ---
 function drawGround() {
-    // Linha do chão
-    gameCtx.strokeStyle = '#27ae60';
-    gameCtx.lineWidth = 4;
+    // Chão verde sólido
+    gameCtx.fillStyle = '#27ae60';
+    gameCtx.fillRect(0, 380, gameCanvas.width, 20);
+
+    // Linha de contorno no topo do chão
+    gameCtx.strokeStyle = '#1e7e34';
+    gameCtx.lineWidth = 3;
     gameCtx.beginPath();
     gameCtx.moveTo(0, 380);
     gameCtx.lineTo(gameCanvas.width, 380);
     gameCtx.stroke();
-
-    // Detalhes de grama (movem com o jogo)
-    gameCtx.strokeStyle = '#2ecc71';
-    gameCtx.lineWidth = 2;
-    const grassOffset = (gameFrameCount * gameSpeed) % 30;
-    for (let i = -1; i < gameCanvas.width / 30 + 1; i++) {
-        const x = i * 30 - grassOffset;
-        gameCtx.beginPath();
-        gameCtx.moveTo(x, 380);
-        gameCtx.lineTo(x + 3, 375);
-        gameCtx.stroke();
-
-        gameCtx.beginPath();
-        gameCtx.moveTo(x + 8, 380);
-        gameCtx.lineTo(x + 11, 376);
-        gameCtx.stroke();
-
-        gameCtx.beginPath();
-        gameCtx.moveTo(x + 16, 380);
-        gameCtx.lineTo(x + 19, 377);
-        gameCtx.stroke();
-    }
 }
 
 // --- Atualizar Dinossauro ---
@@ -912,6 +909,12 @@ function updateDino() {
         dino.y = dino.groundY;
         dino.velocityY = 0;
         dino.jumping = false;
+        dino.coyoteTime = 0; // Reset coyote time no chão
+    } else {
+        // Incrementar coyote time quando está no ar
+        if (dino.coyoteTime < dino.coyoteTimeMax) {
+            dino.coyoteTime++;
+        }
     }
 }
 
@@ -1072,6 +1075,9 @@ function gameOver() {
     gameCanvas.removeEventListener('click', handleTouchJump);
     gameCanvas.removeEventListener('touchstart', handleTouchJump);
 
+    // Desativar proteção anti-cheat
+    disableAntiCheat();
+
     const finalScore = Math.floor(gameScore / 10);
     document.getElementById('final-score').textContent = finalScore;
 
@@ -1087,6 +1093,70 @@ function gameOver() {
 
     // Mostrar tela de game over
     document.getElementById('game-over-screen').style.display = 'block';
+}
+
+// ====================================================================
+// SISTEMA ANTI-CHEAT
+// ====================================================================
+
+// Armazena os métodos originais do console
+let originalConsole = {};
+let antiCheatActive = false;
+
+// --- Ativar Proteção Anti-Cheat ---
+function enableAntiCheat() {
+    if (antiCheatActive) return;
+    antiCheatActive = true;
+
+    // Salvar métodos originais do console
+    originalConsole = {
+        log: console.log,
+        warn: console.warn,
+        error: console.error,
+        info: console.info,
+        debug: console.debug
+    };
+
+    // Desabilitar console durante o jogo
+    console.log = function() {};
+    console.warn = function() {};
+    console.error = function() {};
+    console.info = function() {};
+    console.debug = function() {};
+
+    // Detectar tentativa de abrir DevTools
+    const detectDevTools = () => {
+        const threshold = 160;
+        if (window.outerWidth - window.innerWidth > threshold ||
+            window.outerHeight - window.innerHeight > threshold) {
+            if (gameRunning) {
+                gameOver();
+                alert('⚠️ DevTools detectado! Jogo encerrado para manter a integridade do ranking.');
+            }
+        }
+    };
+
+    // Verificar a cada 1 segundo
+    window.antiCheatInterval = setInterval(detectDevTools, 1000);
+}
+
+// --- Desativar Proteção Anti-Cheat ---
+function disableAntiCheat() {
+    if (!antiCheatActive) return;
+    antiCheatActive = false;
+
+    // Restaurar console
+    console.log = originalConsole.log;
+    console.warn = originalConsole.warn;
+    console.error = originalConsole.error;
+    console.info = originalConsole.info;
+    console.debug = originalConsole.debug;
+
+    // Limpar intervalo de detecção
+    if (window.antiCheatInterval) {
+        clearInterval(window.antiCheatInterval);
+        window.antiCheatInterval = null;
+    }
 }
 
 // --- Salvar Pontuação no Firestore ---
@@ -1227,6 +1297,13 @@ window.addEventListener('load', () => {
             }
         });
     }
+
+    // Prevenir scroll global quando teclas de jogo são pressionadas
+    window.addEventListener('keydown', (e) => {
+        if (gameRunning && (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'ArrowDown')) {
+            e.preventDefault();
+        }
+    });
 
     console.log('🎉 US GURI DA UNOESC - Sistema carregado com sucesso!');
 });
