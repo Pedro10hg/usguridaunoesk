@@ -46,6 +46,7 @@
                         <li><a href="#" onclick="showPage('recados')"><i class="fas fa-comments"></i> Recados</a></li>
                         <li><a href="#" onclick="showPage('chat')"><i class="fas fa-comment-dots"></i> Chat</a></li>
                         <li><a href="#" onclick="showPage('galeria')"><i class="fas fa-images"></i> Galeria</a></li>
+                        <li><a href="#" onclick="showPage('calculadora')"><i class="fas fa-calculator"></i> Calculadora</a></li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle"><i class="fas fa-gamepad"></i> Games <i class="fas fa-caret-down"></i></a>
                             <ul class="dropdown-menu">
@@ -462,6 +463,72 @@
                     <h3>🏆 Top 10 - Cobras Brabas</h3>
                     <div id="snake-ranking-list" class="ranking-list">
                         <p class="loading-text">Carregando ranking...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- PÁGINA: CALCULADORA DE MÉDIA PONDERADA    -->
+    <!-- ========================================== -->
+    <section id="calculadora" class="page">
+        <div class="container">
+            <div class="section-title">
+                <h2>🧮 Calculadora de Média Ponderada</h2>
+            </div>
+
+            <div class="calculadora-content">
+                <div class="calculadora-box">
+                    <h3>Calcule sua média ponderada</h3>
+                    <p>Adicione suas disciplinas com notas e pesos para calcular a média automática!</p>
+
+                    <!-- Lista de Disciplinas -->
+                    <div id="disciplinas-container">
+                        <!-- Disciplina inicial -->
+                        <div class="disciplina-item">
+                            <div class="disciplina-inputs">
+                                <div class="form-group">
+                                    <label>Disciplina:</label>
+                                    <input type="text" class="disc-nome" placeholder="Ex: Matemática" />
+                                </div>
+                                <div class="form-group">
+                                    <label>Nota (0-10):</label>
+                                    <input type="number" class="disc-nota" min="0" max="10" step="0.1" placeholder="0.0" />
+                                </div>
+                                <div class="form-group">
+                                    <label>Peso:</label>
+                                    <input type="number" class="disc-peso" min="0.1" step="0.1" value="1" />
+                                </div>
+                                <button type="button" class="btn-remove-disc" onclick="removerDisciplina(this)" title="Remover disciplina">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botões de Ação -->
+                    <div class="calc-actions">
+                        <button type="button" class="btn-add-disc" onclick="adicionarDisciplina()">
+                            <i class="fas fa-plus"></i> Adicionar Disciplina
+                        </button>
+                        <button type="button" class="btn-calcular" onclick="calcularMedia()">
+                            <i class="fas fa-calculator"></i> Calcular Média
+                        </button>
+                        <button type="button" class="btn-limpar" onclick="limparCalculadora()">
+                            <i class="fas fa-eraser"></i> Limpar Tudo
+                        </button>
+                    </div>
+
+                    <!-- Resultado -->
+                    <div id="resultado-media" class="resultado-box" style="display: none;">
+                        <h3>📊 Resultado</h3>
+                        <div class="resultado-detalhes">
+                            <p><strong>Média Ponderada:</strong> <span id="media-final">0.00</span></p>
+                            <p><strong>Soma das Notas × Pesos:</strong> <span id="soma-notas-pesos">0.00</span></p>
+                            <p><strong>Soma dos Pesos:</strong> <span id="soma-pesos">0.00</span></p>
+                            <p class="resultado-status"><span id="status-aprovacao"></span></p>
+                        </div>
                     </div>
                 </div>
             </div>

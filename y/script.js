@@ -1925,3 +1925,107 @@ window.addEventListener('load', () => {
 
     console.log('🎉 US GURI DA UNOESK - Sistema carregado com sucesso!');
 });
+
+// ====================================================================
+// CALCULADORA DE MÉDIA PONDERADA
+// ====================================================================
+
+function adicionarDisciplina() {
+    const container = document.getElementById('disciplinas-container');
+    const novaDisciplina = document.createElement('div');
+    novaDisciplina.className = 'disciplina-item';
+    novaDisciplina.innerHTML = `
+        <div class="disciplina-inputs">
+            <div class="form-group">
+                <label>Disciplina:</label>
+                <input type="text" class="disc-nome" placeholder="Ex: Matemática" />
+            </div>
+            <div class="form-group">
+                <label>Nota (0-10):</label>
+                <input type="number" class="disc-nota" min="0" max="10" step="0.1" placeholder="0.0" />
+            </div>
+            <div class="form-group">
+                <label>Peso:</label>
+                <input type="number" class="disc-peso" min="0.1" step="0.1" value="1" />
+            </div>
+            <button type="button" class="btn-remove-disc" onclick="removerDisciplina(this)" title="Remover disciplina">
+                <i class="fas fa-trash"></i>
+            </button>
+        </div>
+    `;
+    container.appendChild(novaDisciplina);
+}
+
+function removerDisciplina(button) {
+    const disciplinas = document.querySelectorAll('.disciplina-item');
+    if (disciplinas.length > 1) {
+        button.closest('.disciplina-item').remove();
+    } else {
+        alert('Você precisa ter pelo menos uma disciplina!');
+    }
+}
+
+function calcularMedia() {
+    const disciplinas = document.querySelectorAll('.disciplina-item');
+    let somaNotasPesos = 0;
+    let somaPesos = 0;
+    let disciplinasValidas = 0;
+
+    disciplinas.forEach((disc, index) => {
+        const nome = disc.querySelector('.disc-nome').value.trim();
+        const nota = parseFloat(disc.querySelector('.disc-nota').value);
+        const peso = parseFloat(disc.querySelector('.disc-peso').value);
+
+        if (nome && !isNaN(nota) && !isNaN(peso) && nota >= 0 && nota <= 10 && peso > 0) {
+            somaNotasPesos += nota * peso;
+            somaPesos += peso;
+            disciplinasValidas++;
+        }
+    });
+
+    if (disciplinasValidas === 0) {
+        alert('⚠️ Preencha pelo menos uma disciplina com nota e peso válidos!');
+        return;
+    }
+
+    const mediaPonderada = somaNotasPesos / somaPesos;
+
+    // Atualizar resultado
+    document.getElementById('soma-notas-pesos').textContent = somaNotasPesos.toFixed(2);
+    document.getElementById('soma-pesos').textContent = somaPesos.toFixed(2);
+    document.getElementById('media-final').textContent = mediaPonderada.toFixed(2);
+
+    // Status de aprovação
+    const statusElement = document.getElementById('status-aprovacao');
+    if (mediaPonderada >= 7) {
+        statusElement.innerHTML = '<span class="aprovado">✅ APROVADO!</span>';
+    } else if (mediaPonderada >= 5) {
+        statusElement.innerHTML = '<span class="recuperacao">⚠️ RECUPERAÇÃO</span>';
+    } else {
+        statusElement.innerHTML = '<span class="reprovado">❌ REPROVADO</span>';
+    }
+
+    // Mostrar resultado
+    document.getElementById('resultado-media').style.display = 'block';
+
+    // Scroll suave até o resultado
+    document.getElementById('resultado-media').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function limparCalculadora() {
+    const container = document.getElementById('disciplinas-container');
+
+    // Limpar todos os campos
+    container.querySelectorAll('.disc-nome').forEach(input => input.value = '');
+    container.querySelectorAll('.disc-nota').forEach(input => input.value = '');
+    container.querySelectorAll('.disc-peso').forEach(input => input.value = '1');
+
+    // Remover disciplinas extras, deixar apenas uma
+    const disciplinas = container.querySelectorAll('.disciplina-item');
+    for (let i = 1; i < disciplinas.length; i++) {
+        disciplinas[i].remove();
+    }
+
+    // Esconder resultado
+    document.getElementById('resultado-media').style.display = 'none';
+}
