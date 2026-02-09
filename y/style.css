@@ -1315,6 +1315,25 @@ footer {
     font-weight: bold;
 }
 
+.disclaimer {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background-color: rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: normal;
+    line-height: 1.6;
+}
+
+.disclaimer p {
+    margin: 0.3rem 0;
+}
+
+.disclaimer strong {
+    color: var(--dark);
+    font-weight: 700;
+}
+
 /* ============================================================================
    RESPONSIVIDADE - MOBILE
    ============================================================================ */

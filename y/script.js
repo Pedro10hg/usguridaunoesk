@@ -1923,5 +1923,5 @@ window.addEventListener('load', () => {
         }
     });
 
-    console.log('🎉 US GURI DA UNOESC - Sistema carregado com sucesso!');
+    console.log('🎉 US GURI DA UNOESK - Sistema carregado com sucesso!');
 });
